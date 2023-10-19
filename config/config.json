@@ -1,8 +1,8 @@
 {
   "development": {
     "username": "postgres",
-    "password": "dimapgpass20232024",
-    "database": "database_development",
+    "password": "pgpgadmindima2324server",
+    "database": "dbbydima10",
     "host": "localhost",
     "dialect": "postgres"
   },
@@ -21,4 +21,3 @@
     "dialect": "mysql"
   }
 }
-
