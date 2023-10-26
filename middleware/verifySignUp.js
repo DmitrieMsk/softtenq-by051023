@@ -49,9 +49,41 @@ checkRolesExisted = (req, res, next) => {
   next();
 };
 
+validateCredentials = (req, res, next) => {
+  reUsername = "^[a-zA-Z][a-zA-Z0-9-_\\.]{3,64}$";
+  reEmail = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";
+  rePassword = "(?=^.{8,}$)((?=.*\\d)|(?=.*\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$";
+  if (!req.body.username.match(reUsername)){
+    res.status(400).send({
+      message: "Failed! Invalid username"
+    });
+    return;
+  }
+  if (!req.body.email.match(reEmail)){
+    res.status(400).send({
+      message: "Failed! Invalid email"
+    });
+    return;
+  }
+  if (!req.body.password.match(rePassword)){
+    res.status(400).send({
+      message: "Failed! Invalid password"
+    });
+    return;
+  }
+  next();
+};
+
+
+
+
 const verifySignUp = {
   checkDuplicateUsernameOrEmail: checkDuplicateUsernameOrEmail,
-  checkRolesExisted: checkRolesExisted
+  checkRolesExisted: checkRolesExisted,
+  validateCredentials: validateCredentials
 };
+
+
+
 
 module.exports = verifySignUp;
