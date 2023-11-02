@@ -9,6 +9,7 @@ module.exports = function(app) {
     );
     next();
   });
+  app.get("/user/:userId/" , (req,res) => controller.userPage(req,res))
 
   app.get("/test/all", controller.allAccess);
 

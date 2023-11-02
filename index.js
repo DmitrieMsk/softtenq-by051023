@@ -25,10 +25,7 @@ app.get('/api/fr', (req, res) => {
 const db = require("./models");
 const Role = db.role;
 
-db.sequelize.sync({force: true}).then(() => {
-  console.log('Drop and Resync Db');
-  initial();
-});
+db.sequelize.sync({force: false});
 
 function initial() {
   Role.create({
@@ -45,8 +42,11 @@ function initial() {
     id: 3,
     name: "admin"
   });
+}
+
+
   require('./routes/auth.routes')(app);
 require('./routes/user.routes')(app);
-}
+
 app.listen(3000, () => console.log('Example app is listening on port 3000.'));
 //module.exports = express.Router
