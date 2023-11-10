@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
+const uploadRouter = require('./routes/upload.routes.js')
 
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -12,17 +13,20 @@ app.use((req,res,next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   next();
 });
+app.use(uploadRouter)
+app.get('/file_upload', (_, res) => {
+  res.sendFile(`${__dirname}/file_upload_form.html`);
+});
 app.get('/', (req, res) => {
   res.send('succl resp');
 });
 app.get('/api/fr', (req, res) => {
   res.send('back and front are friends');
 });
-/*router.get('/homepagepage', (req, res) => {
-  res.send('homepage');
-});*/
-//app.use("/homepagepage", wiki);
+
+
 const db = require("./models");
+
 const Role = db.role;
 
 db.sequelize.sync({force: false});
