@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "postgres",
-    "password": "dimapgpass20232024",
+    "password": "dimaSQL2023postgres",
     "database": "dbbydima10",
     "host": "localhost",
     "dialect": "postgres"
