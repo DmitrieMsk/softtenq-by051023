@@ -11,6 +11,7 @@ module.exports = function(app) {
   });
   app.get("/user/:userId/" , (req,res) => controller.userPage(req,res))
 
+
   app.get("/test/all", controller.allAccess);
 
   app.get(

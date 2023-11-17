@@ -3,7 +3,7 @@ const config = require("../config/auth.config");
 const User = db.user;
 const Role = db.role;
 const Op = db.Sequelize.Op;
-
+const googleLink = "https://drive.google.com/file/d/";
 exports.allAccess = (req, res) => {
     res.status(200).send("Public Content.");
   };
@@ -36,9 +36,47 @@ exports.allAccess = (req, res) => {
         res.status(200).send({
           id: user.id,
           username: user.username,
-          email: user.email
+          email: user.email,
+          profilePicture: user.profilePicture
         });
       }
       
     });
+  }
+  exports.profilePicture = async (req, res, photoLink) => {
+    try{
+      User.findOne({
+        where: {
+          id: req.params["userId"]
+        }
+      }).then(user => {
+        console.log(user)
+        user.profilePicture = photoLink
+        user.save()
+        res.status(200).send()
+      })
+    } catch {
+      res.status(500).send()
+    }
+    
+    
+  }
+
+  exports.getAvatarLink = (req, res) => {
+    try{
+      User.findOne({
+        where: {
+          id: req.params["userId"]
+        }
+      }).then(user => {
+        _link = user.profilePicture
+        console.log(_link)
+        res.status(200).send(_link)
+      })
+    } catch {
+      res.status(500).send()
+    }
+  }
+  exports.images = (req, res, userId) => {
+    res.status(501).send()
   }
