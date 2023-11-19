@@ -30,7 +30,7 @@ const db = require("./models");
 const Role = db.role;
 
 db.sequelize.sync({force: false});
-
+//при первом запуске с новой БД, вызвать функцию initial()
 function initial() {
   Role.create({
     id: 1,
