@@ -14,13 +14,10 @@ app.use((req,res,next) => {
   next();
 });
 app.use(uploadRouter)
-app.get('/file_upload', (_, res) => {
-  res.sendFile(`${__dirname}/file_upload_form.html`);
-});
 app.get('/', (req, res) => {
   res.send('succl resp');
 });
-app.get('/api/fr', (req, res) => {
+app.get('/fr', (req, res) => {
   res.send('back and front are friends');
 });
 

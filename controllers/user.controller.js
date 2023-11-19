@@ -20,28 +20,33 @@ exports.allAccess = (req, res) => {
     res.status(200).send("Moderator Content.");
   };
   exports.userPage = (req, res) => { 
+    console.log(Number.isInteger (Number(req.params["userId"])))
+    if(!Number.isInteger(Number(req.params["userId"]))){
+      res.status(406).send("Invalid input")
+      return;
+    }
+      User.findOne({
+        where: {
+          id: req.params["userId"]
+        }
+      }).then(user => {
+        if (!user) {
+          res.status(404).send({
+            message: "Failed! User doesn't exist!"
+          });
+          return;
+        }
+        else{
+          res.status(200).send({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            profilePicture: user.profilePicture
+          });
+        }
+        
+      });
     
-    User.findOne({
-      where: {
-        id: req.params["userId"]
-      }
-    }).then(user => {
-      if (!user) {
-        res.status(400).send({
-          message: "Failed! User doesn't exist!"
-        });
-        return;
-      }
-      else{
-        res.status(200).send({
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          profilePicture: user.profilePicture
-        });
-      }
-      
-    });
   }
   exports.profilePicture = async (req, res, photoLink) => {
     try{
@@ -79,4 +84,8 @@ exports.allAccess = (req, res) => {
   }
   exports.images = (req, res, userId) => {
     res.status(501).send()
+  }
+
+  exports.verifyUser = (req, res) => {
+    res.status(200).send({userId: req.userId})
   }
