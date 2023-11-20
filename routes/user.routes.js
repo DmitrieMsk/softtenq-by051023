@@ -9,8 +9,12 @@ module.exports = function(app) {
     );
     next();
   });
-  app.get("/user/:userId/" , (req,res) => controller.userPage(req,res))
+  app.get(
+    "/user/:userId/" , 
+    controller.userPage
+  );
 
+  app.post("/user/verify", [authJwt.verifyToken], controller.verifyUser)
 
   app.get("/test/all", controller.allAccess);
 

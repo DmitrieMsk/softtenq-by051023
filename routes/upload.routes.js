@@ -19,12 +19,16 @@ const auth = new google.auth.GoogleAuth({
 const uploadFile = async (req, res, fileObject, userId, isProfilePicture) => {
     const bufferStream = new stream.PassThrough()
     bufferStream.end(fileObject.buffer)
+    
+    console.log(fileObject.mimetype)
+    console.log(fileObject.mimetype.substring(0,5))
+    console.log(fileObject.mimetype.substring(0,5) == "image")
     const {data} = await google.drive({
         version: 'v3',
         auth
     }).files.create({
         media:{
-            mimeType: fileObject.mimeType,
+            mimeType: fileObject.mimetype,
             body: bufferStream
         },
         requestBody: {
@@ -46,18 +50,21 @@ const uploadFile = async (req, res, fileObject, userId, isProfilePicture) => {
 }
 
 uploadRouter.post("/user/:userId/avatar" , upload.any(), async (req, res) => {
+    let statusCode = 200
     try{
-        console.log(req.body);
-        console.log(req.files);
+        const type = "image"
         const {body, files} = req
-        for ( let f = 0; f<files.length; f += 1) {
-            await uploadFile(req, res,files[f], 1, true)
+        let file = files[0]
+        if(file.mimetype.substring(0,5) == type){
+            await uploadFile(req, res, file, req.params["userId"], true)
+            res.status(200).send("Submitted")
+        } else {
+            statusCode = 415
+            throw("Wrong file type")
         }
-        console.log(body);
-        res.status(200).send("Submitted")
     } catch (e) {
         console.log(e.message)
-        res.send(e.message)
+        res.status(415).send(e.message)
     }
 })
 uploadRouter.get("/user/:userId/avatar" , controller.getAvatarLink)

@@ -1,23 +1,23 @@
 {
   "development": {
     "username": "postgres",
-    "password": "dimaSQL2023postgres",
-    "database": "dbbydima10",
+    "password": "123",
+    "database": "softenq",
     "host": "localhost",
     "dialect": "postgres"
   },
   "test": {
-    "username": "root",
+    "username": "postgres",
     "password": null,
-    "database": "database_test",
+    "database": "softenq",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "postgres"
   },
   "production": {
-    "username": "root",
+    "username": "postgres",
     "password": null,
-    "database": "database_production",
+    "database": "softenq",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "postgres"
   }
 }

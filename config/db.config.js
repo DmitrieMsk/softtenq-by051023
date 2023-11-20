@@ -1,8 +1,8 @@
 module.exports = {
     HOST: "localhost",
     USER: "postgres",
-    PASSWORD: "dimaSQL2023postgres",
-    DB: "dbbydima10",
+    PASSWORD: "123",
+    DB: "softenq",
     dialect: "postgres",
     pool: {
       max: 5,

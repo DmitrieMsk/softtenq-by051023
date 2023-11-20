@@ -14,13 +14,10 @@ app.use((req,res,next) => {
   next();
 });
 app.use(uploadRouter)
-app.get('/file_upload', (_, res) => {
-  res.sendFile(`${__dirname}/file_upload_form.html`);
-});
 app.get('/', (req, res) => {
   res.send('succl resp');
 });
-app.get('/api/fr', (req, res) => {
+app.get('/fr', (req, res) => {
   res.send('back and front are friends');
 });
 
@@ -30,7 +27,7 @@ const db = require("./models");
 const Role = db.role;
 
 db.sequelize.sync({force: false});
-
+//при первом запуске с новой БД, вызвать функцию initial()
 function initial() {
   Role.create({
     id: 1,
