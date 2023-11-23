@@ -49,6 +49,7 @@ exports.signin = (req, res) => {
   }
 
 };
+
 signinByEmail = (req, res) => {
   User.findOne({
     where: {
@@ -60,6 +61,8 @@ signinByEmail = (req, res) => {
     res.status(500).send({ message: err.message });
   });
 };
+
+
 signinByUsername = (req, res) => {
   
   User.findOne({

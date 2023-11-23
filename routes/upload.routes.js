@@ -19,10 +19,7 @@ const auth = new google.auth.GoogleAuth({
 const uploadFile = async (req, res, fileObject, userId, isProfilePicture) => {
     const bufferStream = new stream.PassThrough()
     bufferStream.end(fileObject.buffer)
-    
-    console.log(fileObject.mimetype)
-    console.log(fileObject.mimetype.substring(0,5))
-    console.log(fileObject.mimetype.substring(0,5) == "image")
+    console.log(isProfilePicture)
     const {data} = await google.drive({
         version: 'v3',
         auth
@@ -43,7 +40,7 @@ const uploadFile = async (req, res, fileObject, userId, isProfilePicture) => {
     if(isProfilePicture){
         controller.profilePicture(req, res, data.id)
     } else {
-        controller.images(req, res, userId)
+        controller.image(req, res, data.id)
     }
 
 
@@ -70,11 +67,10 @@ uploadRouter.post("/user/:userId/avatar" , upload.any(), async (req, res) => {
 uploadRouter.get("/user/:userId/avatar" , controller.getAvatarLink)
 uploadRouter.post("/user/:userId/photos" , upload.any(), async (req, res) => {
     try{
-        console.log(req);
-        console.log(req.files);
+        console.log("img")
         const {body, files} = req
         for ( let f = 0; f<files.length; f += 1) {
-            await uploadFile(files[f], 1, true)
+            await uploadFile(req, res, files[f], req.params["userId"], false)
         }
         console.log(body);
         res.status(200).send("Submitted")

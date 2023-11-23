@@ -2,6 +2,7 @@ const db = require("../models");
 const config = require("../config/auth.config");
 const User = db.user;
 const Role = db.role;
+const UserLinksPhoto = db.user_links_photo;
 const Op = db.Sequelize.Op;
 const googleLink = "https://drive.google.com/file/d/";
 exports.allAccess = (req, res) => {
@@ -82,8 +83,15 @@ exports.allAccess = (req, res) => {
       res.status(500).send()
     }
   }
-  exports.images = (req, res, userId) => {
-    res.status(501).send()
+  exports.image = (req, res, photoLink) => {
+    console.log("imgggggg")
+    UserLinksPhoto.create({
+      user_id: req.params["userId"],
+      googledrive_id: photoLink
+    })
+      .catch(err => {
+        console.log(err.message)
+      });
   }
 
   exports.verifyUser = (req, res) => {
