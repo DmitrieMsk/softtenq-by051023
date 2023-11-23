@@ -1,8 +1,8 @@
 {
   "development": {
     "username": "postgres",
-    "password": "123",
-    "database": "softenq",
+    "password": "dimaSql2023Asus",
+    "database": "dbbydima10",
     "host": "localhost",
     "dialect": "postgres"
   },
