@@ -45,7 +45,6 @@ exports.allAccess = (req, res) => {
             profilePicture: user.profilePicture
           });
         }
-        
       });
     
   }
@@ -84,7 +83,6 @@ exports.allAccess = (req, res) => {
     }
   }
   exports.image = (req, res, photoLink) => {
-    console.log("imgggggg")
     UserLinksPhoto.create({
       user_id: req.params["userId"],
       googledrive_id: photoLink
@@ -94,6 +92,9 @@ exports.allAccess = (req, res) => {
       });
   }
 
+  exports.myProfile = (req, res) => {
+    this.userPage(req, res);
+  }
   exports.verifyUser = (req, res) => {
     res.status(200).send({userId: req.userId})
   }

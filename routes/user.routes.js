@@ -14,6 +14,7 @@ module.exports = function(app) {
     controller.userPage
   );
 
+  app.post("/myprofile",[authJwt.verifyToken], controller.myProfile)
   app.post("/user/verify", [authJwt.verifyToken], controller.verifyUser)
 
   app.get("/test/all", controller.allAccess);
