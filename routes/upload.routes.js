@@ -1,5 +1,6 @@
 const stream = require('stream')
 const express= require('express')
+const { authJwt } = require("../middleware");
 const multer = require('multer')
 const path = require('path')
 const controller = require("../controllers/user.controller");
@@ -80,7 +81,7 @@ uploadRouter.post("/user/:userId/photos" , upload.any(), async (req, res) => {
     }
 })
 uploadRouter.get("/user/:userId/photos" , controller.getPhotos)
-uploadRouter.delete("user/:userId/photos/:photoId", controller.deletePhoto)
+uploadRouter.delete("/user/:userId/photos/:photoId", [authJwt.verifyToken], controller.deletePhoto)
 uploadRouter.post('/upload', upload.any(), async (req, res) => {
     try{
         console.log(req.body);
