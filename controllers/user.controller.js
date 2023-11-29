@@ -91,7 +91,27 @@ exports.allAccess = (req, res) => {
         console.log(err.message)
       });
   }
-
+  exports.getPhotos = (req, res) => {
+    try{
+      let photosArray = []
+      UserLinksPhoto.findAll({
+        where: {
+          user_id: req.params["userId"]
+        }
+      }).then(photos => {
+        photos.forEach((photo) => {
+          let photoJson = {
+            id: photo.id,
+            link: photo.googledrive_id
+          }
+          photosArray.push(photoJson)
+        })
+        res.status(200).send(photosArray);
+      })
+    } catch{
+      res.status(500).send()
+    }
+  }
   exports.myProfile = (req, res) => {
     this.userPage(req, res);
   }

@@ -79,10 +79,8 @@ uploadRouter.post("/user/:userId/photos" , upload.any(), async (req, res) => {
         res.send(e.message)
     }
 })
-uploadRouter.get("/user/:userId/photos" , async (req, res) => {
-    
-})
-
+uploadRouter.get("/user/:userId/photos" , controller.getPhotos)
+uploadRouter.delete("user/:userId/photos/:photoId", controller.deletePhoto)
 uploadRouter.post('/upload', upload.any(), async (req, res) => {
     try{
         console.log(req.body);
