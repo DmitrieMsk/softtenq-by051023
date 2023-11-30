@@ -1,5 +1,6 @@
 const stream = require('stream')
 const express= require('express')
+const { authJwt } = require("../middleware");
 const multer = require('multer')
 const path = require('path')
 const controller = require("../controllers/user.controller");
@@ -67,10 +68,14 @@ uploadRouter.post("/user/:userId/avatar" , upload.any(), async (req, res) => {
 uploadRouter.get("/user/:userId/avatar" , controller.getAvatarLink)
 uploadRouter.post("/user/:userId/photos" , upload.any(), async (req, res) => {
     try{
-        console.log("img")
+        const type = "image"
         const {body, files} = req
         for ( let f = 0; f<files.length; f += 1) {
-            await uploadFile(req, res, files[f], req.params["userId"], false)
+            let file = files[f]
+            if(file.mimetype.substring(0,5) == type){
+                await uploadFile(req, res, file, req.params["userId"], false)
+            }
+            
         }
         console.log(body);
         res.status(200).send("Submitted")
@@ -79,10 +84,8 @@ uploadRouter.post("/user/:userId/photos" , upload.any(), async (req, res) => {
         res.send(e.message)
     }
 })
-uploadRouter.get("/user/:userId/photos" , async (req, res) => {
-    
-})
-
+uploadRouter.get("/user/:userId/photos" , controller.getPhotos)
+uploadRouter.delete("/user/:userId/photos/:photoId", [authJwt.verifyToken], controller.deletePhoto)
 uploadRouter.post('/upload', upload.any(), async (req, res) => {
     try{
         console.log(req.body);

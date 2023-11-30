@@ -91,7 +91,46 @@ exports.allAccess = (req, res) => {
         console.log(err.message)
       });
   }
-
+  exports.getPhotos = (req, res) => {
+    try{
+      let photosArray = []
+      UserLinksPhoto.findAll({
+        where: {
+          user_id: req.params["userId"]
+        }
+      }).then(photos => {
+        photos.forEach((photo) => {
+          let photoJson = {
+            id: photo.id,
+            userId: photo.user_id,
+            link: photo.googledrive_id
+          }
+          photosArray.push(photoJson)
+        })
+        res.status(200).send(photosArray);
+      })
+    } catch{
+      res.status(500).send()
+    }
+  }
+  exports.deletePhoto = (req, res) => {
+    try{
+      UserLinksPhoto.findOne({
+        where: {
+          user_id: req.params["userId"],
+          id: req.params["photoId"]
+        }}).then(photo => {
+          if(photo === undefined || photo === null) {
+            res.status(500).send("Failed to find the photo")
+            return
+          }
+          photo.destroy();
+          res.status(200).send("Deleted")
+        })
+      } catch(e){
+      res.status(500).send(e.message)
+    }
+  }
   exports.myProfile = (req, res) => {
     this.userPage(req, res);
   }
