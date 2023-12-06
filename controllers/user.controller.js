@@ -137,3 +137,20 @@ exports.allAccess = (req, res) => {
   exports.verifyUser = (req, res) => {
     res.status(200).send({userId: req.userId})
   }
+  exports.settings = (req, res) => {
+    try{
+      console.log(req.userId)
+      User.findOne({
+        where: {
+          id: req.body.userId
+        }
+      }).then(user => {
+        user.username = req.body.username
+        user.email = req.body.email
+        user.save()
+        res.status(200).send("User data changed successfully!");
+      })
+    } catch {
+      res.status(500).send()
+    }
+  }
