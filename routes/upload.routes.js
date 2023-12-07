@@ -12,6 +12,7 @@ const upload = multer()
 
 const KEYFILEPATH = path.join(__dirname + "/../credentials.json")
 const SCOPES = ['https://www.googleapis.com/auth/drive']
+const folderID = ['1vb8-adjrLWlsXnsb2odFlqOTDWHW-v_I']
 const auth = new google.auth.GoogleAuth({
     keyFile: KEYFILEPATH,
     scopes: SCOPES
@@ -31,7 +32,7 @@ const uploadFile = async (req, res, fileObject, userId, isProfilePicture) => {
         },
         requestBody: {
             name: fileObject.originalname,
-            parents: ['1pw-JPGqWBrIApgb1XlbxdA1BMZyWXDKC']
+            parents: folderID
         },
         fields: "id,name"
     });

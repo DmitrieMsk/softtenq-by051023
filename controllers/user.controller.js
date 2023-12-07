@@ -3,6 +3,16 @@ const config = require("../config/auth.config");
 const User = db.user;
 const Role = db.role;
 const UserLinksPhoto = db.user_links_photo;
+
+const path = require('path')
+const {google} = require('googleapis')
+const KEYFILEPATH = path.join(__dirname + "/../credentials.json")
+const SCOPES = ['https://www.googleapis.com/auth/drive']
+const folderID = ['1vb8-adjrLWlsXnsb2odFlqOTDWHW-v_I']
+const auth = new google.auth.GoogleAuth({
+    keyFile: KEYFILEPATH,
+    scopes: SCOPES
+})
 const Op = db.Sequelize.Op;
 const googleLink = "https://drive.google.com/file/d/";
 exports.allAccess = (req, res) => {
@@ -114,6 +124,10 @@ exports.allAccess = (req, res) => {
     }
   }
   exports.deletePhoto = (req, res) => {
+    let _fileId = ""
+
+
+    
     try{
       UserLinksPhoto.findOne({
         where: {
@@ -124,12 +138,35 @@ exports.allAccess = (req, res) => {
             res.status(500).send("Failed to find the photo")
             return
           }
+          _fileId = photo.googledrive_id
           photo.destroy();
-          res.status(200).send("Deleted")
+          const drive = google.drive({ version: 'v3', auth }); // Authenticating drive API
+          console.log(KEYFILEPATH)
+          console.log(_fileId)
+      // Deleting the image from Drive
+      drive.files
+        .delete({
+          fileId: _fileId,
+        })
+        .then(
+          async function (response) {
+            res.status(204).json({ status: 'success' });
+            return;
+          },
+          function (err) {
+            return res
+              .status(400)
+              .json({ errors: [{ msg: 'Deletion Failed for some reason' }] });
+              return;
+          }
+        );
         })
       } catch(e){
-      res.status(500).send(e.message)
+        res.status(500).send(e.message)
     }
+     
+    
+      
   }
   exports.myProfile = (req, res) => {
     this.userPage(req, res);
