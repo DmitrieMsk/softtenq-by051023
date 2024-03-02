@@ -2,6 +2,7 @@ const db = require("../models");
 const config = require("../config/auth.config");
 const User = db.user;
 const Role = db.role;
+const Relation = db.relation;
 const UserLinksPhoto = db.user_links_photo;
 
 const path = require('path')
