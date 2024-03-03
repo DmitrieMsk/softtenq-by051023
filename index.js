@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-const uploadRouter = require('./routes/upload.routes.js')
 
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -13,7 +12,6 @@ app.use((req,res,next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   next();
 });
-app.use(uploadRouter)
 app.get('/', (req, res) => {
   res.send('succl resp');
 });
@@ -46,9 +44,9 @@ function initial() {
 }
 
 
-  require('./routes/auth.routes')(app);
+require('./routes/auth.routes')(app);
 require('./routes/user.routes')(app);
 require('./routes/news.routes.js')(app);
-
+require('./routes/photo.routes.js')(app);
 app.listen(3000, () => console.log('Example app is listening on port 3000.'));
 //module.exports = express.Router
