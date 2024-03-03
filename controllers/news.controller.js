@@ -38,10 +38,14 @@ exports.getPost = (req, res) => {
 };
 
 exports.createPost = (req,res) => {
+  if(req.body.ownerId === undefined || req.body.ownerId === null){
+    res.status(400).send("Invalid ownerId");
+    return;
+  }
     Post.create({
         Photo_ID: req.body.photoId,
         Owner_ID: req.body.ownerId,
-        Views: req.body.views,
+        Views: 0,
         Tags: req.body.tags,
         Publication_Date: Date.now(),
         Comment: req.body.comment,
@@ -60,7 +64,7 @@ exports.changePost = (req, res) => {
     try{
             if(req.params["postId"] == undefined || req.params["postId"] === null)
             {
-                res.status(500).send("Invalid Id")
+                res.status(400).send("Invalid Id")
                 return
             }
             Post.findOne({
@@ -83,7 +87,54 @@ exports.changePost = (req, res) => {
                 post.save()
                 res.status(200).send("Changed");
             })
-        } catch {
-        res.status(500).send()
+        } catch (e){
+        res.status(500).send(e.message)
       }
 };
+
+exports.feed = (req, res) => {
+  try{
+    let flags = req.body.flags;
+    let startingPoint = req.body.startingPoint;
+    let postsCount = req.body.postsCount;
+    let order = undefined;
+    switch(flags){
+      //Date sorted search
+      case 0:
+          order = [["Publication_Date", "DESC"]]
+        break;
+      //Views sorted search
+      case 1:
+        order = [["Views", "DESC"]]
+        break;
+      default:
+        throw("Invalid flags");
+    
+    }
+    Post.findAll({
+      limit: postsCount,
+      offset: startingPoint,
+      order: order
+    }).then(posts => {
+      let postsArray = [];
+      posts.forEach((post) => {
+        let postJson = {
+          id: post.id,
+          photoId: post.Photo_ID,
+          ownerId: post.Owner_ID,
+          views: post.Views,
+          tags: post.Tags,
+          publicationDate: post.Publication_Date,
+          comment: post.Comment,
+          privacy: post.Privacy,
+          repostedFrom: post.Reposted_From_ID
+        }
+        postsArray.push(postJson)
+      });
+      res.status(200).send(postsArray);
+    });
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+
+}

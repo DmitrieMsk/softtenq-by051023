@@ -22,4 +22,8 @@ module.exports = function(app) {
     "/post/:postId/edit",
     controller.changePost
   );
+  app.post(
+   "/feed",
+   controller.feed 
+  )
 };
