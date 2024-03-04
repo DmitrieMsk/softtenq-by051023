@@ -95,7 +95,7 @@ exports.uploadPhotos = async (req, res) => {
     }
 }
 
-exports.image = (req, res, photoLink) => {
+image = (req, res, photoLink) => {
     UserLinksPhoto.create({
       user_id: req.params["userId"],
       googledrive_id: photoLink
@@ -104,7 +104,7 @@ exports.image = (req, res, photoLink) => {
         console.log(err.message)
       });
 }
- exports.profilePicture = async (req, res, photoLink) => {
+profilePicture = async (req, res, photoLink) => {
     try{
       User.findOne({
         where: {
@@ -114,10 +114,10 @@ exports.image = (req, res, photoLink) => {
         console.log(user)
         user.profilePicture = photoLink
         user.save()
-        res.status(200).send()
+        console.log("success")
       })
-    } catch {
-      res.status(500).send()
+    } catch (err){
+        console.log(err.message)
     }
   }
 
