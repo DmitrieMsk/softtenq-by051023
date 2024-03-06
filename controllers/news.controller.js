@@ -38,9 +38,29 @@ exports.getPost = (req, res) => {
 };
 
 exports.createPost = (req,res) => {
-  if(req.body.ownerId === undefined || req.body.ownerId === null){
+  if(req.body.ownerId === undefined || req.body.ownerId === null || !Number.isInteger(req.body.ownerId) ){
     res.status(400).send("Invalid ownerId");
     return;
+  }
+  if(req.body.photoId === undefined || req.body.photoId === null || !Number.isInteger(req.body.photoId) ){
+    res.status(400).send("Invalid photoId");
+    return;
+  }
+  if(req.body.repostedFrom !== undefined && req.body.repostedFrom !== null)
+  {
+    if(!Number.isInteger(req.body.repostedFrom))
+      {
+        res.status(400).send("Invalid repostedFrom");
+        return;
+      }
+  }
+  if(req.body.privacy !== undefined && req.body.privacy !== null)
+  {
+    if(!Number.isInteger(req.body.privacy))
+      {
+        res.status(400).send("Invalid privacy Flags");
+        return;
+      }
   }
     Post.create({
         Photo_ID: req.body.photoId,
@@ -93,6 +113,18 @@ exports.changePost = (req, res) => {
 };
 
 exports.feed = (req, res) => {
+  if(req.body.flags === undefined || req.body.flags === null || !Number.isInteger(req.body.flags) ){
+    res.status(400).send("Invalid flags");
+    return;
+  }
+  if(req.body.startingPoint === undefined || req.body.startingPoint === null || !Number.isInteger(req.body.startingPoint) ){
+    res.status(400).send("Invalid startingPoint");
+    return;
+  }
+  if(req.body.postsCount === undefined || req.body.postsCount === null || !Number.isInteger(req.body.postsCount) ){
+    res.status(400).send("Invalid postsCount");
+    return;
+  }
   try{
     let flags = req.body.flags;
     let startingPoint = req.body.startingPoint;
