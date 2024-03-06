@@ -3,7 +3,7 @@ const User = db.user;
 const Post = db.post;
 const Comment = db.comment;
 const Like = db.like;
-
+const INT_MAX = 2147483647;
 /*
 exports.getPost = (req, res) => {
 
@@ -38,17 +38,17 @@ exports.getPost = (req, res) => {
 };
 
 exports.createPost = (req,res) => {
-  if(req.body.ownerId === undefined || req.body.ownerId === null || !Number.isInteger(req.body.ownerId) ){
+  if(req.body.ownerId === undefined || req.body.ownerId === null || !Number.isInteger(req.body.ownerId) || req.body.ownerId > INT_MAX || req.body.photoId < 0){
     res.status(400).send("Invalid ownerId");
     return;
   }
-  if(req.body.photoId === undefined || req.body.photoId === null || !Number.isInteger(req.body.photoId) ){
+  if(req.body.photoId === undefined || req.body.photoId === null || !Number.isInteger(req.body.photoId) || req.body.photoId > INT_MAX || req.body.photoId < 0){
     res.status(400).send("Invalid photoId");
     return;
   }
   if(req.body.repostedFrom !== undefined && req.body.repostedFrom !== null)
   {
-    if(!Number.isInteger(req.body.repostedFrom))
+    if(!Number.isInteger(req.body.repostedFrom) || req.body.repostedFrom > INT_MAX || req.body.repostedFrom < 0)
       {
         res.status(400).send("Invalid repostedFrom");
         return;
@@ -56,11 +56,14 @@ exports.createPost = (req,res) => {
   }
   if(req.body.privacy !== undefined && req.body.privacy !== null)
   {
-    if(!Number.isInteger(req.body.privacy))
+    if(!Number.isInteger(req.body.privacy) || req.body.privacy > INT_MAX || req.body.privacy < 0)
       {
         res.status(400).send("Invalid privacy Flags");
         return;
       }
+  }
+  if(req.body.privacy === undefined || req.body.privacy === null){
+    req.body.privacy = 0;
   }
     Post.create({
         Photo_ID: req.body.photoId,
@@ -81,6 +84,24 @@ exports.createPost = (req,res) => {
 }
 
 exports.changePost = (req, res) => {
+  if(req.body.photoId === undefined || req.body.photoId === null || !Number.isInteger(req.body.photoId) || req.body.photoId > INT_MAX || req.body.photoId < 0){
+    res.status(400).send("Invalid photoId");
+    return;
+  }
+  if(req.body.privacy !== undefined && req.body.privacy !== null)
+  {
+    if(!Number.isInteger(req.body.privacy) || req.body.privacy > INT_MAX || req.body.privacy < 0)
+      {
+        res.status(400).send("Invalid privacy Flags");
+        return;
+      }
+  }
+  if(req.body.privacy === undefined || req.body.privacy === null){
+    req.body.privacy = 0;
+  }
+  if(req.body.viewsDifference === undefined || req.body.viewsDifference === null || !Number.isInteger(req.body.viewsDifference) || req.body.viewsDifference > INT_MAX ){
+    req.body.viewsDifference = 0;
+  }
     try{
             if(req.params["postId"] == undefined || req.params["postId"] === null)
             {
@@ -108,7 +129,7 @@ exports.changePost = (req, res) => {
                 res.status(200).send("Changed");
             })
         } catch (e){
-        res.status(500).send(e.message)
+        res.status(500).send("Unknown error");
       }
 };
 
