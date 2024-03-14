@@ -38,19 +38,19 @@ exports.getPost = (req, res) => {
 };
 
 exports.createPost = (req,res) => {
-  if(req.body.ownerId === undefined || req.body.ownerId === null || !Number.isInteger(req.body.ownerId) || req.body.ownerId > INT_MAX || req.body.photoId < 0){
-    res.status(400).send("Invalid ownerId");
+  if(req.body.ownerId === undefined || req.body.ownerId === null || !Number.isInteger(req.body.ownerId) || req.body.ownerId > INT_MAX || req.body.ownerId < 0){
+    res.status(400).send({message: "Invalid ownerId"});
     return;
   }
   if(req.body.photoId === undefined || req.body.photoId === null || !Number.isInteger(req.body.photoId) || req.body.photoId > INT_MAX || req.body.photoId < 0){
-    res.status(400).send("Invalid photoId");
+    res.status(400).send({message: "Invalid photoId"});
     return;
   }
   if(req.body.repostedFrom !== undefined && req.body.repostedFrom !== null)
   {
     if(!Number.isInteger(req.body.repostedFrom) || req.body.repostedFrom > INT_MAX || req.body.repostedFrom < 0)
       {
-        res.status(400).send("Invalid repostedFrom");
+        res.status(400).send({message: "Invalid repostedFrom"});
         return;
       }
   }
@@ -58,7 +58,7 @@ exports.createPost = (req,res) => {
   {
     if(!Number.isInteger(req.body.privacy) || req.body.privacy > INT_MAX || req.body.privacy < 0)
       {
-        res.status(400).send("Invalid privacy Flags");
+        res.status(400).send({message: "Invalid privacy Flags"});
         return;
       }
   }
@@ -77,22 +77,22 @@ exports.createPost = (req,res) => {
       })
       .catch(err => {
         console.log(err.message)
-        res.status(500).send("Failed to create the post");
+        res.status(500).send({message: "Failed to create the post"});
         return;
     });
-    res.status(200).send("Created a new post");
+    res.status(200).send({message: "Created a new post"});
 }
 
 exports.changePost = (req, res) => {
   if(req.body.photoId === undefined || req.body.photoId === null || !Number.isInteger(req.body.photoId) || req.body.photoId > INT_MAX || req.body.photoId < 0){
-    res.status(400).send("Invalid photoId");
+    res.status(400).send({message: "Invalid photoId"});
     return;
   }
   if(req.body.privacy !== undefined && req.body.privacy !== null)
   {
     if(!Number.isInteger(req.body.privacy) || req.body.privacy > INT_MAX || req.body.privacy < 0)
       {
-        res.status(400).send("Invalid privacy Flags");
+        res.status(400).send({message: "Invalid privacy Flags"});
         return;
       }
   }
@@ -105,7 +105,7 @@ exports.changePost = (req, res) => {
     try{
             if(req.params["postId"] == undefined || req.params["postId"] === null)
             {
-                res.status(400).send("Invalid Id")
+                res.status(400).send({message: "Invalid Id"})
                 return
             }
             Post.findOne({
@@ -114,7 +114,7 @@ exports.changePost = (req, res) => {
             }
             }).then(post => {
                 if(post === undefined || post === null) {
-                    res.status(500).send("Failed to find the post")
+                    res.status(500).send({message: "Failed to find the post"})
                     return
                   }
                 post.Photo_ID = req.body.photoId;
@@ -126,24 +126,24 @@ exports.changePost = (req, res) => {
                 post.Privacy = req.body.privacy;
 
                 post.save()
-                res.status(200).send("Changed");
+                res.status(200).send({message: "Changed"});
             })
         } catch (e){
-        res.status(500).send("Unknown error");
+        res.status(500).send({message: "Unknown error"});
       }
 };
 
 exports.feed = (req, res) => {
   if(req.body.flags === undefined || req.body.flags === null || !Number.isInteger(req.body.flags) ){
-    res.status(400).send("Invalid flags");
+    res.status(400).send({message: "Invalid flags"});
     return;
   }
   if(req.body.startingPoint === undefined || req.body.startingPoint === null || !Number.isInteger(req.body.startingPoint) ){
-    res.status(400).send("Invalid startingPoint");
+    res.status(400).send({message: "Invalid startingPoint"});
     return;
   }
   if(req.body.postsCount === undefined || req.body.postsCount === null || !Number.isInteger(req.body.postsCount) ){
-    res.status(400).send("Invalid postsCount");
+    res.status(400).send({message: "Invalid postsCount"});
     return;
   }
   try{
@@ -187,7 +187,7 @@ exports.feed = (req, res) => {
       res.status(200).send(postsArray);
     });
   } catch (e) {
-    res.status(500).send(e.message);
+    res.status(500).send({message: e.message});
   }
 
 }
