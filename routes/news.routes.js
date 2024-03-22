@@ -25,5 +25,9 @@ module.exports = function(app) {
   app.post(
    "/feed",
    controller.feed 
-  )
+  );
+  app.post(
+    "/post/:userId/getall",
+    controller.getUserPosts 
+   );
 };

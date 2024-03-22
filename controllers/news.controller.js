@@ -191,3 +191,69 @@ exports.feed = (req, res) => {
   }
 
 }
+
+exports.getUserPosts = (req, res) => {
+  if(req.body.flags === undefined || req.body.flags === null || !Number.isInteger(req.body.flags) ){
+    res.status(400).send({message: "Invalid flags"});
+    return;
+  }
+  if(req.body.startingPoint === undefined || req.body.startingPoint === null || !Number.isInteger(req.body.startingPoint) ){
+    res.status(400).send({message: "Invalid startingPoint"});
+    return;
+  }
+  if(req.body.postsCount === undefined || req.body.postsCount === null || !Number.isInteger(req.body.postsCount) ){
+    res.status(400).send({message: "Invalid postsCount"});
+    return;
+  }
+  if(req.params["userId"] === undefined || req.params["userId"] === null || !Number.isInteger(req.params["userId"]) || req.params["userId"] > INT_MAX || req.params["userId"] < 0){
+    res.status(400).send({message: "Invalid userId"});
+    return;
+  }
+  try{
+    let flags = req.body.flags;
+    let startingPoint = req.body.startingPoint;
+    let postsCount = req.body.postsCount;
+    let order = undefined;
+    switch(flags){
+      //Date sorted search
+      case 0:
+          order = [["Publication_Date", "DESC"]]
+        break;
+      //Views sorted search
+      case 1:
+        order = [["Views", "DESC"]]
+        break;
+      default:
+        throw("Invalid flags");
+    
+    }
+    Post.findAll({
+      where: {
+        id: req.params["userId"]
+      },
+      limit: postsCount,
+      offset: startingPoint,
+      order: order
+    }).then(posts => {
+      let postsArray = [];
+      posts.forEach((post) => {
+        let postJson = {
+          id: post.id,
+          photoId: post.Photo_ID,
+          ownerId: post.Owner_ID,
+          views: post.Views,
+          tags: post.Tags,
+          publicationDate: post.Publication_Date,
+          comment: post.Comment,
+          privacy: post.Privacy,
+          repostedFrom: post.Reposted_From_ID
+        }
+        postsArray.push(postJson)
+      });
+      res.status(200).send(postsArray);
+    });
+  } catch (e) {
+    res.status(500).send({message: e.message});
+  }
+
+}
