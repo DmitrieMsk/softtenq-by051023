@@ -80,3 +80,6 @@ exports.allAccess = (req, res) => {
       res.status(500).send()
     }
   }
+  exports.searchForUser = (req, res) => {
+    res.status(500).send({message: "Not implemented"});
+  }

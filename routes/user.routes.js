@@ -40,4 +40,8 @@ module.exports = function(app) {
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.adminBoard
   );
+  app.post(
+    "/user/search", 
+    controller.searchForUser
+  );
 };

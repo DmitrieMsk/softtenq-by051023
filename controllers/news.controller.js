@@ -2,6 +2,7 @@ const db = require("../models");
 const User = db.user;
 const Post = db.post;
 const Comment = db.comment;
+const stream = require('stream')
 const Like = db.like;
 const INT_MAX = 2147483647;
 /*
@@ -37,7 +38,7 @@ exports.getPost = (req, res) => {
       });
 };
 
-exports.createPost = (req,res) => {
+exports.createPost = async (req,res) => {
   if(req.body.ownerId === undefined || req.body.ownerId === null || !Number.isInteger(req.body.ownerId) || req.body.ownerId > INT_MAX || req.body.ownerId < 0){
     res.status(400).send({message: "Invalid ownerId"});
     return;
@@ -65,8 +66,46 @@ exports.createPost = (req,res) => {
   if(req.body.privacy === undefined || req.body.privacy === null){
     req.body.privacy = 0;
   }
+  
+    const type = "image"
+    const {body, files} = req
+    let file = files[0]
+    if( file === undefined || file === null || file.mimetype.substring(0,5) != type){
+      console.log(file);
+      res.status(400).send({message: "Invalid photo"});
+      return;
+    }
+    const bufferStream = new stream.PassThrough()
+    bufferStream.end(fileObject.buffer)
+    const {data} = await google.drive({
+        version: 'v3',
+        auth
+    }).files.create({
+      media:{
+          mimeType: fileObject.mimetype,
+          body: bufferStream
+      },
+      requestBody: {
+          name: fileObject.originalname,
+          parents: folderID
+      },
+      fields: "id,name"
+    });
+    
+    const photo = UserLinksPhoto.create({
+      user_id: req.body.ownerId,
+      googledrive_id: data.id
+    })
+    .catch(err => {
+      console.log(err.message)
+      res.status(500).send({message: "Error occured while saving photo to the database."});
+      return;
+    })
+  
+  
+
     Post.create({
-        Photo_ID: req.body.photoId,
+        Photo_ID: photo.id,
         Owner_ID: req.body.ownerId,
         Views: 0,
         Tags: req.body.tags,
