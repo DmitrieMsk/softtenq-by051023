@@ -81,5 +81,42 @@ exports.allAccess = (req, res) => {
     }
   }
   exports.searchForUser = (req, res) => {
-    res.status(500).send({message: "Not implemented"});
+    if(req.body.flags === undefined || req.body.flags === null || !Number.isInteger(req.body.flags) ){
+      res.status(400).send({message: "Invalid flags"});
+      return;
+    }
+    try{
+      let flags = req.body.flags;
+      let user;
+      let searchParam;
+      switch(flags){
+        case 0:
+          searchParam = {
+            where: {
+              username: req.body.username.toLowerCase()
+            }
+          };
+          break;
+        default:
+          throw("Invalid flags");
+      }
+      User.findOne(searchParam).then(user => {
+        if (!user) {
+          res.status(404).send({
+            message: "Failed! User doesn't exist!"
+          });
+          return;
+        } else {
+          res.status(200).send({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            profilePicture: user.profilePicture
+          });
+        }
+      });
+    } catch (e) {
+      res.status(500).send({message: e});
+      return;
+    }
   }
