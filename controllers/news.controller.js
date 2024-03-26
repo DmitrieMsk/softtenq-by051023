@@ -65,6 +65,11 @@ exports.createPost = async (req,res) => {
   
     const type = "image"
     const {body, files} = req
+    if(files === undefined || files === null){
+      console.log(file);
+      res.status(400).send({message: "No photos provided"});
+      return;
+    }
     let file = files[0]
     if( file === undefined || file === null || file.mimetype.substring(0,5) != type){
       console.log(file);
