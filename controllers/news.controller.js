@@ -43,10 +43,6 @@ exports.createPost = async (req,res) => {
     res.status(400).send({message: "Invalid ownerId"});
     return;
   }
-  if(req.body.photoId === undefined || req.body.photoId === null || !Number.isInteger(req.body.photoId) || req.body.photoId > INT_MAX || req.body.photoId < 0){
-    res.status(400).send({message: "Invalid photoId"});
-    return;
-  }
   if(req.body.repostedFrom !== undefined && req.body.repostedFrom !== null)
   {
     if(!Number.isInteger(req.body.repostedFrom) || req.body.repostedFrom > INT_MAX || req.body.repostedFrom < 0)
