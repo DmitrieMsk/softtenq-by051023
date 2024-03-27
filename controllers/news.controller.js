@@ -62,7 +62,9 @@ exports.createPost = async (req,res) => {
   if(req.body.privacy === undefined || req.body.privacy === null){
     req.body.privacy = 0;
   }
-  
+  let photoId = req.body.photoId;
+  if(photoId === undefined || photoId === null)
+  {
     const type = "image"
     const {body, files} = req
     if(files === undefined || files === null){
@@ -100,11 +102,21 @@ exports.createPost = async (req,res) => {
       res.status(500).send({message: "Error occured while saving photo to the database."});
       return;
     })
+
+    photoId = photo.id;
+  } else {
+    if(!Number.isInteger(photoId) || photoId > INT_MAX || photoId < 0)
+      {
+        res.status(500).send({message: "Invalid photoId has been provided"});
+        return;
+      }
+  }
+    
   
   
 
     Post.create({
-        Photo_ID: photo.id,
+        Photo_ID: photoId,
         Owner_ID: req.body.ownerId,
         Views: 0,
         Tags: req.body.tags,
