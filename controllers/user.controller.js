@@ -100,7 +100,7 @@ exports.allAccess = (req, res) => {
         default:
           throw("Invalid flags");
       }
-      User.findOne(searchParam).then(user => {
+      User.findOne(searchParam, user).then(user => {
         if (!user) {
           res.status(404).send({
             message: "Failed! User doesn't exist!"
