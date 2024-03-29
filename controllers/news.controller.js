@@ -1,10 +1,10 @@
 const db = require("../models");
+const helper = require("./common");
 const User = db.user;
 const Post = db.post;
 const Comment = db.comment;
 const stream = require('stream')
 const Like = db.like;
-const INT_MAX = 2147483647;
 /*
 exports.getPost = (req, res) => {
 
@@ -39,40 +39,40 @@ exports.getPost = (req, res) => {
 };
 
 exports.createPost = async (req,res) => {
-  if(req.body.ownerId === undefined || req.body.ownerId === null || !Number.isInteger(req.body.ownerId) || req.body.ownerId > INT_MAX || req.body.ownerId < 0){
+  if(!helper.IsDefinedUInt(req.body.ownerId)){
     res.status(400).send({message: "Invalid ownerId"});
     return;
   }
-  if(req.body.repostedFrom !== undefined && req.body.repostedFrom !== null)
+  if(helper.IsDefined(req.body.repostedFrom))
   {
-    if(!Number.isInteger(req.body.repostedFrom) || req.body.repostedFrom > INT_MAX || req.body.repostedFrom < 0)
+    if(!helper.IsUInt(req.body.repostedFrom))
       {
         res.status(400).send({message: "Invalid repostedFrom"});
         return;
       }
   }
-  if(req.body.privacy !== undefined && req.body.privacy !== null)
+  if(helper.IsDefined(req.body.privacy))
   {
-    if(!Number.isInteger(req.body.privacy) || req.body.privacy > INT_MAX || req.body.privacy < 0)
+    if(!helper.IsUInt(req.body.privacy))
       {
         res.status(400).send({message: "Invalid privacy Flags"});
         return;
       }
   }
-  if(req.body.privacy === undefined || req.body.privacy === null){
+  if(!helper.IsDefined(req.body.privacy)){
     req.body.privacy = 0;
   }
   let photoId = req.body.photoId;
-  if(photoId === undefined || photoId === null)
+  if(!helper.IsDefined(photoId))
   {
     const type = "image"
     const {body, files} = req
-    if(files === undefined || files === null){
+    if(!helper.IsDefined(files)){
       res.status(400).send({message: "No photos provided"});
       return;
     }
     let file = files[0]
-    if( file === undefined || file === null || file.mimetype.substring(0,5) != type){
+    if(!helper.IsDefined(file) || file.mimetype.substring(0,5) != type){
       res.status(400).send({message: "Invalid photo"});
       return;
     }
@@ -105,7 +105,7 @@ exports.createPost = async (req,res) => {
 
     photoId = photo.id;
   } else {
-    if(!Number.isInteger(photoId) || photoId > INT_MAX || photoId < 0)
+    if(!helper.IsUInt(photoId))
       {
         res.status(500).send({message: "Invalid photoId has been provided"});
         return;
@@ -134,26 +134,26 @@ exports.createPost = async (req,res) => {
 }
 
 exports.changePost = (req, res) => {
-  if(req.body.photoId === undefined || req.body.photoId === null || !Number.isInteger(req.body.photoId) || req.body.photoId > INT_MAX || req.body.photoId < 0){
+  if(!helper.IsDefinedUInt(req.body.photoId)){
     res.status(400).send({message: "Invalid photoId"});
     return;
   }
-  if(req.body.privacy !== undefined && req.body.privacy !== null)
+  if(helper.IsDefined(req.body.privacy))
   {
-    if(!Number.isInteger(req.body.privacy) || req.body.privacy > INT_MAX || req.body.privacy < 0)
+    if(!helper.IsUInt(req.body.privacy) )
       {
         res.status(400).send({message: "Invalid privacy Flags"});
         return;
       }
   }
-  if(req.body.privacy === undefined || req.body.privacy === null){
+  if(!helper.IsDefined(req.body.privacy)){
     req.body.privacy = 0;
   }
-  if(req.body.viewsDifference === undefined || req.body.viewsDifference === null || !Number.isInteger(req.body.viewsDifference) || req.body.viewsDifference > INT_MAX ){
+  if(!helper.IsDefinedUInt(req.body.viewsDifference)){
     req.body.viewsDifference = 0;
   }
     try{
-            if(req.params["postId"] == undefined || req.params["postId"] === null)
+            if(!helper.IsDefined(req.params["postId"]))
             {
                 res.status(400).send({message: "Invalid Id"})
                 return
@@ -163,7 +163,7 @@ exports.changePost = (req, res) => {
                 id: req.params["postId"]
             }
             }).then(post => {
-                if(post === undefined || post === null) {
+                if(!helper.IsDefined(post)) {
                     res.status(500).send({message: "Failed to find the post"})
                     return
                   }
@@ -184,15 +184,15 @@ exports.changePost = (req, res) => {
 };
 
 exports.feed = (req, res) => {
-  if(req.body.flags === undefined || req.body.flags === null || !Number.isInteger(req.body.flags) ){
+  if(!helper.IsDefinedInt(req.body.flags)){
     res.status(400).send({message: "Invalid flags"});
     return;
   }
-  if(req.body.startingPoint === undefined || req.body.startingPoint === null || !Number.isInteger(req.body.startingPoint) ){
+  if(!helper.IsDefinedUInt(req.body.startingPoint)){
     res.status(400).send({message: "Invalid startingPoint"});
     return;
   }
-  if(req.body.postsCount === undefined || req.body.postsCount === null || !Number.isInteger(req.body.postsCount) ){
+  if(!helper.IsDefinedUInt(req.body.postsCount)){
     res.status(400).send({message: "Invalid postsCount"});
     return;
   }
@@ -243,19 +243,19 @@ exports.feed = (req, res) => {
 }
 
 exports.getUserPosts = (req, res) => {
-  if(req.body.flags === undefined || req.body.flags === null || !Number.isInteger(req.body.flags) ){
+  if(!helper.IsDefinedInt(req.body.flags)){
     res.status(400).send({message: "Invalid flags"});
     return;
   }
-  if(req.body.startingPoint === undefined || req.body.startingPoint === null || !Number.isInteger(req.body.startingPoint) ){
+  if(!helper.IsDefinedUInt(req.body.startingPoint)){
     res.status(400).send({message: "Invalid startingPoint"});
     return;
   }
-  if(req.body.postsCount === undefined || req.body.postsCount === null || !Number.isInteger(req.body.postsCount) ){
+  if(!helper.IsDefinedUInt(req.body.postsCount)){
     res.status(400).send({message: "Invalid postsCount"});
     return;
   }
-  if(req.params["userId"] === undefined || req.params["userId"] === null || !Number.isInteger(req.params["userId"]) || req.params["userId"] > INT_MAX || req.params["userId"] < 0){
+  if(!helper.IsDefinedUInt(req.params["userId"])){
     res.status(400).send({message: "Invalid userId"});
     return;
   }
