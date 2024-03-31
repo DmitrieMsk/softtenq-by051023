@@ -6,16 +6,26 @@ IsDefined = (value) => {
     return (value !== undefined && value !== null);
 }
 
-common.IsDefined = (value) => {
-    return (value !== undefined && value !== null);
+IsUInt = (value) => {
+    return (Number.isInteger(value) && value < INT_MAX && value >= 0);
 }
 
-common.IsUInt = (value) => {
+IsVID = (value) => {
     return (Number.isInteger(value) && value < INT_MAX && value > 0);
 }
 
+common.IsDefined = IsDefined;
+
+common.IsVID = IsVID;
+
+common.IsUInt = IsUInt;
+
 common.IsDefinedUInt = (value) => {
-    return (IsDefined(value) && Number.isInteger(value) && value < INT_MAX && value > 0);
+    return (IsDefined(value) && IsUInt(value));
+}
+
+common.IsDefinedVID = (value) => {
+    return (IsDefined(value) && IsVID(value));
 }
 
 common.IsDefinedInt = (value) => {

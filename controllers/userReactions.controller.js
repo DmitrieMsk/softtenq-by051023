@@ -12,7 +12,7 @@ exports.submitLike = (req, res) => {
     let postId = null, commentId = null, actorId;
     let likeJson;
     actorId = req.body.actorId;
-    if(!helper.IsDefinedUInt(actorId))
+    if(!helper.IsDefinedVID(actorId))
     {
         res.status(400).send({message: "Invalid actorId"});
         return;
@@ -20,7 +20,7 @@ exports.submitLike = (req, res) => {
 
     if(helper.IsDefined(req.body.postId)) {
         postId = req.body.postId;
-        if(!helper.IsUInt(postId))
+        if(!helper.IsVID(postId))
         {
             res.status(400).send({message: "Invalid postId"})
             return;
@@ -30,7 +30,7 @@ exports.submitLike = (req, res) => {
     }
     if(helper.IsDefined(req.body.commentId)) {
         commentId = req.body.commentId;
-        if(!helper.IsUInt(commentId))
+        if(!helper.IsVID(commentId))
         {
             res.status(400).send({message: "Invalid commentId"})
             return;

@@ -45,7 +45,7 @@ exports.createPost = async (req,res) => {
   }
   if(helper.IsDefined(req.body.repostedFrom))
   {
-    if(!helper.IsUInt(req.body.repostedFrom))
+    if(!helper.IsVID(req.body.repostedFrom))
       {
         res.status(400).send({message: "Invalid repostedFrom"});
         return;
@@ -105,7 +105,7 @@ exports.createPost = async (req,res) => {
 
     photoId = photo.id;
   } else {
-    if(!helper.IsUInt(photoId))
+    if(!helper.IsVID(photoId))
       {
         res.status(500).send({message: "Invalid photoId has been provided"});
         return;
@@ -134,7 +134,7 @@ exports.createPost = async (req,res) => {
 }
 
 exports.changePost = (req, res) => {
-  if(!helper.IsDefinedUInt(req.body.photoId)){
+  if(!helper.IsDefinedVID(req.body.photoId)){
     res.status(400).send({message: "Invalid photoId"});
     return;
   }
@@ -149,7 +149,7 @@ exports.changePost = (req, res) => {
   if(!helper.IsDefined(req.body.privacy)){
     req.body.privacy = 0;
   }
-  if(!helper.IsDefinedUInt(req.body.viewsDifference)){
+  if(!helper.IsDefinedInt(req.body.viewsDifference)){
     req.body.viewsDifference = 0;
   }
     try{
@@ -255,7 +255,7 @@ exports.getUserPosts = (req, res) => {
     res.status(400).send({message: "Invalid postsCount"});
     return;
   }
-  if(!helper.IsDefinedUInt(req.params["userId"])){
+  if(!helper.IsDefined(req.params["userId"])){
     res.status(400).send({message: "Invalid userId"});
     return;
   }
@@ -279,7 +279,7 @@ exports.getUserPosts = (req, res) => {
     }
     Post.findAll({
       where: {
-        id: req.params["userId"]
+        Owner_ID: req.params["userId"]
       },
       limit: postsCount,
       offset: startingPoint,
