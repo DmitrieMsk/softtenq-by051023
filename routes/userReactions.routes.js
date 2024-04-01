@@ -14,5 +14,9 @@ module.exports = function(app) {
     "/like/submit",
     controller.submitLike
    );
+   app.get(
+    "/post/:postId/getlikes",
+    controller.getLikeCount
+   );
 };
   

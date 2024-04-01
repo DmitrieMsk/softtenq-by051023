@@ -75,3 +75,37 @@ exports.submitLike = (req, res) => {
     
     
 }
+
+exports.getLikeCount = (req, res) => {
+    try{
+        let postId = req.params["postId"];
+        if(!helper.IsDefinedVID(postId)) {
+            res.status(400).send({message: "Invalid postId"});
+            return;
+        }
+        let likesArray = [];
+        Like.findAll({
+            where: {
+                Post_ID: postId
+            }
+        }).then(likes => {
+            if(!likes){
+                res.status(400).send({message: "This post haven't got any likes"});
+                return;
+            } else {
+                likes.forEach((like) => {
+                    let likeJson = {
+                        likeId: like.id,
+                        actorId: like.Actor_ID
+                    }
+                    likesArray.push(likeJson);
+                })
+                res.status(200).send(likesArray);
+                return;
+            }
+        })
+    } catch (e) {
+        res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."});
+        return;
+    }
+}

@@ -179,7 +179,7 @@ exports.changePost = (req, res) => {
                 res.status(200).send({message: "Changed"});
             })
         } catch (e){
-        res.status(500).send({message: "Unknown error"});
+        res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."});
       }
 };
 
@@ -237,7 +237,7 @@ exports.feed = (req, res) => {
       res.status(200).send(postsArray);
     });
   } catch (e) {
-    res.status(500).send({message: e.message});
+    res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."});
   }
 
 }
@@ -303,7 +303,7 @@ exports.getUserPosts = (req, res) => {
       res.status(200).send(postsArray);
     });
   } catch (e) {
-    res.status(500).send({message: e.message});
+    res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."});
   }
 
 }

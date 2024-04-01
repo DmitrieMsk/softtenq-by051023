@@ -11,7 +11,7 @@ IsUInt = (value) => {
 }
 
 IsVID = (value) => {
-    return (Number.isInteger(value) && value < INT_MAX && value > 0);
+    return (value < INT_MAX && value > 0);
 }
 
 common.IsDefined = IsDefined;

@@ -78,7 +78,7 @@ exports.allAccess = (req, res) => {
         res.status(200).send("User data changed successfully!");
       })
     } catch {
-      res.status(500).send()
+      res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."})
     }
   }
   exports.searchForUser = (req, res) => {
@@ -133,7 +133,7 @@ exports.allAccess = (req, res) => {
         }
       });
     } catch (e) {
-      res.status(500).send({message: e});
+      res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."});
       return;
     }
   }

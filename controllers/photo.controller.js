@@ -72,7 +72,7 @@ exports.uploadFiles = async (req, res) => {
         res.status(200).send("Form submitted")
     } catch (e) {
         console.log(e.message)
-        res.send(e.message)
+        res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."})
     }
 }
 
@@ -91,7 +91,7 @@ exports.uploadPhotos = async (req, res) => {
         res.status(200).send("Submitted")
     } catch (e) {
         console.log(e.message)
-        res.send(e.message)
+        res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."})
     }
 }
 
@@ -133,7 +133,7 @@ try{
     res.status(200).send(_link)
     })
 } catch {
-    res.status(500).send()
+    res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."})
 }
 }
 exports.getPhotos = (req, res) => {
@@ -155,7 +155,7 @@ try{
     res.status(200).send(photosArray);
     })
 } catch{
-    res.status(500).send()
+    res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."})
 }
 }
 exports.deletePhoto = (req, res) => {
@@ -194,6 +194,6 @@ try{
     );
     })
     } catch(e){
-    res.status(500).send(e.message)
+    res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."})
 }
 }
