@@ -11,7 +11,7 @@ module.exports = function(app) {
         );
         next();
       });
-    app.get(
+    app.post(
         "/user/:userId/photos" ,
          controller.getPhotos);
     app.post(

@@ -1,4 +1,5 @@
 const db = require("../models");
+const helper = require("./common");
 const User = db.user;
 const UserLinksPhoto = db.user_links_photo;
 const stream = require('stream')
@@ -98,7 +99,8 @@ exports.uploadPhotos = async (req, res) => {
 image = (req, res, photoLink) => {
     UserLinksPhoto.create({
       user_id: req.params["userId"],
-      googledrive_id: photoLink
+      googledrive_id: photoLink,
+      association_flags: helper.PHOTOFLAGS.GALLERY
     })
       .catch(err => {
         console.log(err.message)
@@ -138,12 +140,39 @@ try{
 }
 exports.getPhotos = (req, res) => {
 try{
-    let photosArray = []
-    UserLinksPhoto.findAll({
-    where: {
-        user_id: req.params["userId"]
+    let associationFlags = req.body.flags;
+    if(!helper.IsDefinedInt(associationFlags))
+    {
+        res.status(400).send({message: "Invalid flags"});
+        return;
     }
-    }).then(photos => {
+    let searchParam;
+    switch(associationFlags){
+        case -1:
+            searchParam = {
+                where: {
+                    user_id: req.params["userId"]
+                }
+            };
+        
+            break;
+        case helper.PHOTOFLAGS.GALLERY:
+        case helper.PHOTOFLAGS.POST:
+            
+            searchParam = {
+                where: {
+                    user_id: req.params["userId"],
+                    association_flags: associationFlags
+                }
+            };
+        
+            break;
+        default:
+            res.status(400).send({message: "Unknown flag"})
+            return;
+    }
+    let photosArray = []
+    UserLinksPhoto.findAll(searchParam).then(photos => {
     photos.forEach((photo) => {
         let photoJson = {
         id: photo.id,
@@ -153,8 +182,9 @@ try{
         photosArray.push(photoJson)
     })
     res.status(200).send(photosArray);
+    return;
     })
-} catch{
+} catch (e) {
     res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."})
 }
 }

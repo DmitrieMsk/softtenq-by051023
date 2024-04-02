@@ -95,7 +95,8 @@ exports.createPost = async (req,res) => {
     
     const photo = UserLinksPhoto.create({
       user_id: req.body.ownerId,
-      googledrive_id: data.id
+      googledrive_id: data.id,
+      association_flags: helper.PHOTOFLAGS.POST
     })
     .catch(err => {
       console.log(err.message)

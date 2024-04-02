@@ -1,6 +1,10 @@
 
 const common = {};
 const INT_MAX = 2147483647;
+const PHOTOFLAGS = {
+    GALLERY: 0,
+    POST : 1
+};
 
 IsDefined = (value) => {
     return (value !== undefined && value !== null);
@@ -33,4 +37,6 @@ common.IsDefinedInt = (value) => {
 }
 
 common.DB_INT_MAX = INT_MAX;
+common.PHOTOFLAGS = PHOTOFLAGS;
+
 module.exports = common;

@@ -15,7 +15,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   user_links_photo.init({
     user_id: DataTypes.INTEGER,
-    googledrive_id: DataTypes.STRING
+    googledrive_id: DataTypes.STRING,
+    association_flags: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'user_links_photo',
