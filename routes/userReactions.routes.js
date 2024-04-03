@@ -13,10 +13,18 @@ module.exports = function(app) {
   app.post(
     "/like/submit",
     controller.submitLike
-   );
-   app.get(
+  );
+  app.get(
     "/post/:postId/getlikes",
     controller.getLikeCount
-   );
+  );
+  app.post(
+    "/comment/create",
+     controller.createComment
+  );
+  app.get(
+    "/comment/:commentId/",
+    controller.getComment
+  );
 };
   

@@ -109,3 +109,76 @@ exports.getLikeCount = (req, res) => {
         return;
     }
 }
+
+exports.createComment = (req, res) => {
+    let actorId = req.body.actorId;
+    let topicId = req.body.topicId;
+    let text = req.body.commentContent;
+    let isReply = req.body.isReply;
+
+    if(!helper.IsDefinedVID(actorId)) {
+        res.status(400).send({message: "Invalid actorId"});
+        return;
+    }
+
+    if(!helper.IsDefinedVID(topicId)) {
+        res.status(400).send({message: "Invalid topicId"});
+        return;
+    }
+
+    if(!helper.IsDefined(text))
+    {
+        res.status(400).send({message: "Invalid commentContent"});
+        return;
+    }
+
+    if(text.length == 0) {
+        res.status(400).send({message: "#ERR#: Empty comment"});
+        return;
+    }
+
+
+    if(!helper.IsDefined(isReply))
+        isReply = false;
+
+    Comment.create({
+        Actor_ID: actorId,
+        Topic_ID: topicId,
+        Text: text,
+        IsReply: isReply,
+        Publication_Date: Date.now()
+    })
+    .catch(err => {
+        console.log(err.message)
+        res.status(500).send({message: "Failed to create a comment"});
+        return;
+    });
+    res.status(200).send({message: "Comment created"});
+    return;
+}
+
+
+exports.getComment = (req, res) => {
+    Comment.findOne({
+        where: {
+          id: req.params["commentId"]
+        }
+      }).then(comment => {
+        if (!comment) {
+          res.status(404).send({
+            message: "Failed! Comment doesn't exist!"
+          });
+          return;
+        }
+        else{
+          res.status(200).send({
+            id: comment.id,
+            topicId: comment.Topic_ID,
+            actorId: comment.Actor_ID,
+            commentContent: comment.Text,
+            isReply: comment.IsReply,
+            publicationDate: comment.Publication_Date,
+          });
+        }
+      });
+}
