@@ -95,9 +95,7 @@ exports.allAccess = (req, res) => {
     try{
       let flags = req.body.flags;
       let searchParam;
-      let limit = {
-        limit: userCount
-      }
+      let limit = userCount;
       switch(flags){
         case 0:
           searchParam = {
@@ -107,12 +105,14 @@ exports.allAccess = (req, res) => {
               }
             }
           };
+          console.log(req.body.username.toLowerCase())
           break;
         default:
           throw("Invalid flags");
       }
+      searchParam.limit = limit
       let usersArray = [];
-      User.findAll(limit, searchParam).then(users => {
+      User.findAll(searchParam).then(users => {
         if (!users) {
           res.status(404).send({
             message: "Failed! User doesn't exist!"
