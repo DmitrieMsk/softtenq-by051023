@@ -2,6 +2,7 @@
 const common = {};
 const INT_MAX = 2147483647;
 const PHOTOFLAGS = {
+    GLOBAL: -1,
     GALLERY: 0,
     POST : 1
 };

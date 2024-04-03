@@ -148,7 +148,7 @@ try{
     }
     let searchParam;
     switch(associationFlags){
-        case -1:
+        case helper.PHOTOFLAGS.GLOBAL:
             searchParam = {
                 where: {
                     user_id: req.params["userId"]
