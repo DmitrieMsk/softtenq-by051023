@@ -1,6 +1,7 @@
 
 const common = {};
 const INT_MAX = 2147483647;
+DEFAULT_PHOTOLINK = "1VgCxxUp0H8x3o5_tuvG-9q9w8Psg36UY";
 const PHOTOFLAGS = {
     GLOBAL: -1,
     GALLERY: 0,
@@ -37,7 +38,11 @@ common.IsDefinedInt = (value) => {
     return (IsDefined(value) && Number.isInteger(value));
 }
 
+common.GetProfilePicture = (value) => {
+    return (IsDefined(value) ? value : DEFAULT_PHOTOLINK);
+}
+
 common.DB_INT_MAX = INT_MAX;
 common.PHOTOFLAGS = PHOTOFLAGS;
-
+common.DEFAULT_PHOTOLINK = DEFAULT_PHOTOLINK;
 module.exports = common;

@@ -1,5 +1,6 @@
 const db = require("../models");
 const User = db.user;
+const helper = require("./common");
 const Relation = db.relation;
 const UserLinksPhoto = db.user_links_photo;
 const path = require('path')
@@ -52,7 +53,7 @@ exports.allAccess = (req, res) => {
             id: user.id,
             username: user.username,
             email: user.email,
-            profilePicture: user.profilePicture
+            profilePicture: helper.GetProfilePicture(user.profilePicture)
           });
         }
       });
@@ -124,7 +125,7 @@ exports.allAccess = (req, res) => {
               id: user.id,
               username: user.username,
               email: user.email,
-              profilePicture: user.profilePicture
+              profilePicture: helper.GetProfilePicture(user.profilePicture)
             };
             usersArray.push(userJson);
           });
