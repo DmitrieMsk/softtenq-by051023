@@ -114,6 +114,13 @@ profilePicture = async (req, res, photoLink) => {
         }
       }).then(user => {
         console.log(user)
+        if(user.profilePicture) {
+            const drive = google.drive({ version: 'v3', auth });
+            drive.files
+            .delete({
+                fileId: user.profilePicture,
+            })
+        }
         user.profilePicture = photoLink
         user.save()
         console.log("success")
