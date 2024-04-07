@@ -6,6 +6,7 @@ const Comment = db.comment;
 const stream = require('stream')
 const Like = db.like;
 
+const Op = db.Sequelize.Op;
 exports.submitLike = (req, res) => {
     const MAX_PARAMS = 2; // change on adding a new param. shows how many different entites can be reacted to with a like(comments, posts, etc*. <--maybe???)
     let paramsProvided = 0, flags = -1;
@@ -157,6 +158,44 @@ exports.createComment = (req, res) => {
     return;
 }
 
+exports.changeComment = (req, res) => {
+    let commentId = req.params["commentId"];
+    let text = req.body.commentContent;
+    if(!helper.IsDefined(commentId)){
+      res.status(400).send({message: "Invalid commentId"});
+      return;
+    }
+
+    if(!helper.IsDefined(text))
+    {
+        res.status(400).send({message: "Invalid commentContent"});
+        return;
+    }
+
+    if(text.length == 0) {
+        res.status(400).send({message: "#ERR#: Empty comment"});
+        return;
+    }
+    try{
+        Comment.findOne({
+            where: {
+                id: commentId
+            }
+        }).then(comment => {
+            if(!helper.IsDefined(comment)) {
+                res.status(500).send({message: "Failed to find the comment"})
+                return
+            }
+            comment.Text = text;
+
+            comment.save()
+            res.status(200).send({message: "Changed"});
+        })
+        } catch (e){
+        res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."});
+    }
+  };
+
 
 exports.getComment = (req, res) => {
     Comment.findOne({
@@ -179,6 +218,64 @@ exports.getComment = (req, res) => {
             isReply: comment.IsReply,
             publicationDate: comment.Publication_Date,
           });
+        }
+      });
+}
+
+exports.getLiked = (req, res) => {
+    let userId = req.params["userId"];
+    let flags = req.body.flags;
+    let searchParam;
+
+    if(!helper.IsDefinedUInt(flags)) {
+        res.status(400).send({message: "Invalid flags"});
+        return;
+    }
+    
+    switch(flags){
+        case helper.SEARCHFLAGS.POST:
+            searchParam = {
+                where: {
+                    Actor_ID: userId,
+                    Post_ID: {
+                        [Op.ne]: null
+                    }
+                }
+            }
+            
+            break;  
+        case helper.SEARCHFLAGS.COMMENT:
+            searchParam = {
+                where: {
+                    Actor_ID: userId,
+                    Comment_ID: {
+                        [Op.ne]: null
+                    }
+                }
+            }
+            break;          
+        default:            
+            res.status(400).send({message: "Unknown flags"});
+            return;
+    }
+    let likesArray = [];
+    Like.findAll(searchParam).then(likes => {
+        if (!likes) {
+          res.status(400).send({
+            message: "Not found"
+          });
+          return;
+        } else {
+          likes.forEach((like) => {
+            let likeJson = {
+                id: like.id,
+                postId: like.Post_ID,
+                commentId: like.Comment_ID
+            };
+            likesArray.push(likeJson);
+          });
+          res.status(200).send(likesArray);
+          return;
         }
       });
 }

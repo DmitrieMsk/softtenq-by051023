@@ -26,5 +26,13 @@ module.exports = function(app) {
     "/comment/:commentId/",
     controller.getComment
   );
+  app.post(
+    "/like/user/:userId/getliked",
+    controller.getLiked
+  );
+  app.post(
+    "/comment/:commentId/edit",
+    controller.changeComment
+  );
 };
   

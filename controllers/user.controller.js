@@ -115,7 +115,7 @@ exports.allAccess = (req, res) => {
       let usersArray = [];
       User.findAll(searchParam).then(users => {
         if (!users) {
-          res.status(404).send({
+          res.status(400).send({
             message: "Failed! User doesn't exist!"
           });
           return;
