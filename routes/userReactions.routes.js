@@ -34,5 +34,9 @@ module.exports = function(app) {
     "/comment/:commentId/edit",
     controller.changeComment
   );
+  app.post(
+    "/comment/:topicId/getall",
+    controller.getAllComments
+  );
 };
   

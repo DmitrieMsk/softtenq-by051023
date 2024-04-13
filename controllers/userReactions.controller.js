@@ -279,3 +279,39 @@ exports.getLiked = (req, res) => {
         }
       });
 }
+
+exports.getAllComments = (req, res) => {
+    try{
+        let topicId = req.params["topicId"];
+        let isReply = false;
+        if(req.body.isReply)
+            isReply = true;
+        let commentsArray = [];
+        Comment.findAll({
+            where: {
+                Topic_ID: topicId,
+                IsReply: isReply
+            }
+        }).then(comments => {
+            if(!comments){
+                res.status(400).send({message: "This topic haven't got any comments"});
+                return;
+            } else {
+                comments.forEach((comment) => {
+                    let commentJson = {
+                        commentId: comment.id,
+                        actorId: comment.Actor_ID,
+                        commentContent: comment.Text,
+                        publicationDate: comment.Publication_Date
+                    }
+                    commentsArray.push(commentJson);
+                })
+                res.status(200).send(commentsArray);
+                return;
+            }
+        })
+    } catch (e) {
+        res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."});
+        return;
+    }
+}
