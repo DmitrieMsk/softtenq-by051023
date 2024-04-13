@@ -12,14 +12,14 @@ module.exports = function(app) {
         next();
       });
     app.post(
-        "/user/:userId/photos" ,
+        "/user/:userId/photo/get" ,
          controller.getPhotos);
     app.post(
         "/user/:userId/avatar" , 
         upload.any(), 
         controller.uploadAvatar)
     app.post(
-        "/user/:userId/photos" , 
+        "/user/:userId/photo/uploadphotos" , 
         upload.any(), 
         controller.uploadPhotos)
     app.post(
