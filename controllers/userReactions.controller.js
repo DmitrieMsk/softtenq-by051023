@@ -326,7 +326,7 @@ exports.getAllUserComments = (req, res) => {
             }
         }).then(comments => {
             if(!comments){
-                res.status(400).send({message: "This topic haven't got any comments"});
+                res.status(400).send({message: "This user haven't got any comments"});
                 return;
             } else {
                 comments.forEach((comment) => {
@@ -348,3 +348,24 @@ exports.getAllUserComments = (req, res) => {
         return;
     }
 }
+
+exports.deleteComment = (req, res) => {
+    try{
+        Comment.findOne({
+        where: {
+            id: req.params["commentId"]
+        }}).then(comment => {
+            if(!helper.IsDefined(comment)) {
+                res.status(500).send({message:"Failed to find the comment"})
+                return
+            }
+            comment.destroy().then(() => {
+                res.status(200).send({message: "Deleted!"});
+                return;
+            });
+        })
+        } catch(e){
+        res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."})
+        return;
+    }
+    }

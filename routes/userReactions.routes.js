@@ -22,6 +22,14 @@ module.exports = function(app) {
     "/comment/create",
      controller.createComment
   );
+  app.post(
+    "/comment/:commentId/edit",
+    controller.changeComment
+  );
+  app.delete(
+    "/comment/:commentId",
+    controller.deleteComment
+  );
   app.get(
     "/comment/:commentId/",
     controller.getComment
@@ -29,10 +37,6 @@ module.exports = function(app) {
   app.post(
     "/like/user/:userId/getliked",
     controller.getLiked
-  );
-  app.post(
-    "/comment/:commentId/edit",
-    controller.changeComment
   );
   app.post(
     "/comment/:topicId/getall",

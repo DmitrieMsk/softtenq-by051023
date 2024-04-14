@@ -219,7 +219,7 @@ try{
     })
     .then(
         async function (response) {
-        res.status(204).json({ status: 'success' });
+        res.status(200).json({ status: 'success' });
         return;
         },
         function (err) {
