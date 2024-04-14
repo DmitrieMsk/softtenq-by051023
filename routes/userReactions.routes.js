@@ -37,6 +37,10 @@ module.exports = function(app) {
   app.post(
     "/comment/:topicId/getall",
     controller.getAllComments
+  );  
+  app.get(
+    "/comment/user/:userId/getall",
+    controller.getAllUserComments
   );
 };
   
