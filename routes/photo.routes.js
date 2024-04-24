@@ -26,6 +26,9 @@ module.exports = function(app) {
         '/upload', 
         upload.any(), 
         controller.uploadFiles)
+    app.get(
+        '/photo/:photoId',
+        controller.getPhoto)
     app.delete(
         "/user/:userId/photos/:photoId", 
         [authJwt.verifyToken], 

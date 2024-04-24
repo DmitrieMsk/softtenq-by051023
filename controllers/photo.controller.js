@@ -195,6 +195,25 @@ try{
     res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."})
 }
 }
+
+exports.getPhoto = (req, res) => {
+    try{
+        UserLinksPhoto.findOne({
+            where: {
+                id: req.params["photoId"]
+            }
+        }).then(photo => {
+        let photoJson = {
+            userId: photo.user_id,
+            associationFlags: photo.association_flags
+        }
+        res.status(200).send(photoJson);
+        return;
+        })
+    } catch (e) {
+        res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."})
+    }
+    }
 exports.deletePhoto = (req, res) => {
 let _fileId = ""
 try{
