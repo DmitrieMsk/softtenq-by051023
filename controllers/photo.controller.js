@@ -205,6 +205,7 @@ exports.getPhoto = (req, res) => {
         }).then(photo => {
         let photoJson = {
             userId: photo.user_id,
+            googleDriveId: photo.googledrive_id,
             associationFlags: photo.association_flags
         }
         res.status(200).send(photoJson);
