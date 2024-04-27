@@ -9,6 +9,14 @@ const Like = db.like;
 exports.getPost = (req, res) => {
 
 };
+
+getPhotoJsonById = (photoId) => {
+  let photoJson = {};
+  let aFlags = helper.
+  if(!helper.IsDefinedVID(photoId))
+    return photoJson;
+
+}
 */
 exports.getPost = (req, res) => {
     Post.findOne({

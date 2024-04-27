@@ -203,6 +203,11 @@ exports.getPhoto = (req, res) => {
                 id: req.params["photoId"]
             }
         }).then(photo => {
+        if(!helper.IsDefined(photo))
+        {
+            res.status(400).send({message: "Not found."});
+            return;
+        }
         let photoJson = {
             userId: photo.user_id,
             googleDriveId: photo.googledrive_id,
