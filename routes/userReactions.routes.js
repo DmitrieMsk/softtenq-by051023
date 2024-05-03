@@ -31,7 +31,7 @@ module.exports = function(app) {
     controller.deleteComment
   );
   app.get(
-    "/comment/:commentId/",
+    "/comment/:commentId",
     controller.getComment
   );
   app.post(
