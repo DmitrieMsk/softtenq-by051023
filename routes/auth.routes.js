@@ -21,6 +21,10 @@ module.exports = function(app) {
     ],
     controller.signup
   );
+  app.get(
+    "/auth/confirm/:hashId",
+    controller.confirmRegistration
+  )
 
   app.post("/auth/signin", controller.signin);
 };

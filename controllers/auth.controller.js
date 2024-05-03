@@ -1,4 +1,5 @@
 const db = require("../models");
+const helper = require("./common")
 const config = require("../config/auth.config");
 const User = db.user;
 const Role = db.role;
@@ -7,16 +8,30 @@ const Op = db.Sequelize.Op;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
-
+const separator = "___";
 exports.signup = (req, res) => {
+
   // Save User to Database
   User.create({
     username: req.body.username.toLowerCase(),
     email: req.body.email.toLowerCase(),
-    password: bcrypt.hashSync(req.body.password, 8)
+    password: bcrypt.hashSync(req.body.password, 8),
+    IsActive: -1
   })
     .then(user => {
+      userId = user.id;
+      str = userId.toString();
+      str += separator + helper.ENCRYPT(userId.toString());
+      console.log(str)
+      helper.TRANSPORTER.sendMail({
+        from: '"D&D 👻" <softenq030524@yandex.ru>', // sender address
+        to: user.email, // list of receivers
+        subject: "One last step", // Subject line
+        text: `Hello, in order to complete the registration you have to follow the link ${helper.LOCALADDR}auth/confirm/${str}` // plain text body
+        /*html: "<b>Hello world?</b>", // html body*/
+      });
       if (req.body.roles) {
+        
         Role.findAll({
           where: {
             name: {
@@ -49,7 +64,39 @@ exports.signin = (req, res) => {
   }
 
 };
-
+exports.confirmRegistration = (req, res) => {
+  hash = req.params["hashId"];
+  strArr = hash.split(separator);
+  userId = strArr[0];
+  userIdHash = strArr[1];
+  console.log(`userId crypted: ${helper.ENCRYPT(userId)} \n userIdHash: ${userIdHash}`)
+  if(helper.ENCRYPT(userId) != userIdHash)
+  {
+    res.status(400).send({ message: "Invalid link"});
+    return;
+  }
+  User.findOne({
+    where: {
+      id: userId
+    }
+  }).then(user => {
+    if(!helper.IsDefined(user))
+      {
+        res.status(500).send({message: "User not found"})
+        return;
+      }
+    if(user.IsActive != -1 && !helper.IsDefined(user.IsActive))
+      {
+        console.log(user.IsActive)
+        res.status(400).send({ message: "The link has expired"});
+        return;
+      }
+    user.IsActive = 1;
+    user.save();
+    res.status(200).send({message: "Confirmed!"})
+    return;
+  });
+}
 signinByEmail = (req, res) => {
   User.findOne({
     where: {

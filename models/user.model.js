@@ -11,6 +11,9 @@ module.exports = (sequelize, Sequelize) => {
     },
     profilePicture: {
       type: Sequelize.STRING
+    },
+    IsActive: {
+      type: Sequelize.INTEGER
     }
   });
 
