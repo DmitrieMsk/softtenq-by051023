@@ -30,4 +30,8 @@ module.exports = function(app) {
     "/post/user/:userId",
     controller.getUserPosts 
    );
+   app.delete(
+    "/post/:postId/delete",
+    controller.deletePost
+   )
 };

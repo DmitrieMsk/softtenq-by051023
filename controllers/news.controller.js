@@ -192,6 +192,83 @@ exports.changePost = (req, res) => {
       }
 };
 
+function destroyLikes(commentId, postId)
+{
+  _status = -2;
+  searchParam = {};
+  if(!helper.IsDefined(commentId) && !helper.IsDefined(postId))
+    return _status;
+  _status++;
+  if(helper.IsDefined(commentId) && helper.IsDefined(postId))
+    return _status;
+  _status++;
+  Like.findAll({
+    where: {
+      Comment_ID: commentId,
+      Post_ID: postId
+    }
+  }).then(likes => {
+    likes.forEach(like => {
+      like.destroy();
+      _status++;
+    });
+    return _status;
+  })
+} 
+
+exports.deletePost = (req, res) => {
+  postId = req.params["postId"];
+  counter = 0;
+  if(!helper.IsVID(postId))
+    {
+      res.status(400).send({message: "Invalid postId"});
+      return;
+    }
+  Post.findOne({
+    where: {
+      id: postId
+    }
+  }).then(post => {
+    if(!helper.IsDefined(post))
+      {
+        res.status(400).send({message: "Post not found"});
+        return;
+      }
+      post.destroy();
+      counter += destroyLikes(postId, null);
+      counter++;
+    Comment.findAll({
+      where: {
+        Topic_ID: postId,
+        IsReply: false
+      }
+    }).then(comments => {
+      comments.forEach(comment => {
+        commentId = comment.id;
+        comment.destroy();
+        counter += destroyLikes(null, commentId);
+        counter++;
+        Comment.findAll({
+          where: {
+            Topic_ID: commentId,
+            IsReply: true
+          }
+        }).then(_comments => {
+          _comments.forEach(_comment => {
+            _commentId = _comment.id;
+            _comment.destroy();
+            counter += destroyLikes(null, _commentId);
+            counter++;
+          })
+        })
+      })
+    });
+  });
+    
+  res.status(200).send({message: `Deleted items.`});
+  return;
+};
+
 exports.feed = (req, res) => {
   if(!helper.IsDefinedInt(req.body.flags)){
     res.status(400).send({message: "Invalid flags"});
