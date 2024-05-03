@@ -9,6 +9,11 @@ const Op = db.Sequelize.Op;
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 const separator = "___";
+getHashById = (id) => {
+  str = id.toString();
+  str += separator + helper.ENCRYPT(id.toString());
+  return str;
+}
 exports.signup = (req, res) => {
 
   // Save User to Database
@@ -20,9 +25,7 @@ exports.signup = (req, res) => {
   })
     .then(user => {
       userId = user.id;
-      str = userId.toString();
-      str += separator + helper.ENCRYPT(userId.toString());
-      console.log(str)
+      str = getHashById(userId);
       helper.TRANSPORTER.sendMail({
         from: '"D&D 👻" <softenq030524@yandex.ru>', // sender address
         to: user.email, // list of receivers
@@ -97,6 +100,77 @@ exports.confirmRegistration = (req, res) => {
     return;
   });
 }
+
+exports.changeCredentials = (req, res) => {
+  userId = req.params["userId"]
+  if(!helper.IsVID(userId))
+    {
+      res.status(400).send({message: "Invalid userId"})
+      return;
+    }
+  User.findOne({
+    where: {
+      id: userId
+    }
+  }).then( user => {
+    if(!user)
+      {
+        res.status(400).send({message: "User not found"})
+        return;
+      }
+    str = getHashById(userId);
+    helper.TRANSPORTER.sendMail({
+      from: '"D&D 👻" <softenq030524@yandex.ru>', // sender address
+      to: user.email, // list of receivers
+      subject: "Resetting password", // Subject line
+      text: `Hello, someone tried to change your account's credentials. If it was you, follow the link: ${helper.REMADDR}auth/reset/${str}` // plain text body
+      /*html: "<b>Hello world?</b>", // html body*/
+    });
+    res.status(200).send({message: "Success!"});
+  })
+
+}
+exports.changePassword = (req, res) => {
+  passwordNew = req.body.password;
+  userId = req.params["userId"];
+  hash = req.body.hash;
+  if(!helper.IsDefined(passwordNew))
+    {
+      res.status(400).send({message: "Invalid password"})
+      return;
+    }
+  if(!helper.IsVID(userId))
+    {
+      res.status(400).send({message: "Invalid userId"});
+      return;
+    }
+  if((getHashById(userId) != hash))
+    { 
+      console.log(`userId crypted: ${getHashById(userId)}\nhash: ${hash}`)
+      res.status(400).send({message: "Invalid hash"});
+      return;
+    }
+  User.findOne({
+    where: {
+      id: userId
+    }
+  }).then(user => {
+    if(!user)
+      {
+        res.status(400).send({message: "User not found"});
+        return;
+      }
+      user.password = bcrypt.hashSync(passwordNew, 8);
+      res.status(200).send({message: "Success!"});
+      return;
+  })
+}
+/*
+exports.changeEmail = (req, res) => {
+
+}
+*/
+
 signinByEmail = (req, res) => {
   User.findOne({
     where: {

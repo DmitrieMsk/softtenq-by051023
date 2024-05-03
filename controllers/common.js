@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 const crypto = require('crypto');
 const localAddress = "http://localhost:3000/"
+const remoteAddress = "http://localhost:8000/"
 const transporter = nodemailer.createTransport({
     host: "smtp.yandex.ru",
     port: 587,
@@ -70,4 +71,5 @@ common.NODEMAILER = nodemailer;
 common.TRANSPORTER = transporter;
 common.ENCRYPT = sha256;
 common.LOCALADDR = localAddress;
+common.REMADDR = remoteAddress;
 module.exports = common;

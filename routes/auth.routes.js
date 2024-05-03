@@ -27,4 +27,16 @@ module.exports = function(app) {
   )
 
   app.post("/auth/signin", controller.signin);
+
+  app.get("/auth/:userId/forgot", controller.changeCredentials)
+
+  app.post("/auth/:userId/change/password",
+  [verifySignUp.validatePassword],
+  controller.changePassword)
+  
+  /*
+  app.post("/auth/:userId/change/email",
+  [verifySignUp.validateEmail],
+   controller.changeEmail)
+   */
 };
