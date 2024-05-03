@@ -350,19 +350,34 @@ exports.getAllUserComments = (req, res) => {
 }
 
 exports.deleteComment = (req, res) => {
+    commentId = req.params["commentId"];
+    if(!helper.IsVID(commentId))
+        {
+            res.status(400).send({message: "Invalid commentId"});
+            return;
+        }
     try{
         Comment.findOne({
         where: {
-            id: req.params["commentId"]
+            id: commentId
         }}).then(comment => {
             if(!helper.IsDefined(comment)) {
                 res.status(500).send({message:"Failed to find the comment"})
-                return
-            }
-            comment.destroy().then(() => {
-                res.status(200).send({message: "Deleted!"});
                 return;
-            });
+            }
+            comment.destroy();
+            helper.DESTROYLIKES(null, commentId);
+            Comment.findAll({
+                where: {
+                    Topic_ID: commentId,
+                    IsReply: true
+                }
+            }).then(comments => {
+                comments.forEach(_comment => {
+                    _commentId = _comment.id;
+                    helper.DESTROYLIKES(null, _commentId);
+                })
+            })
         })
         } catch(e){
         res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."})

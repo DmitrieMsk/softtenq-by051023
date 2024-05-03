@@ -63,6 +63,30 @@ common.GetProfilePicture = (value) => {
     return (IsDefined(value) ? value : DEFAULT_PHOTOLINK);
 }
 
+function destroyLikes(commentId, postId)
+{
+  _status = -2;
+  searchParam = {};
+  if(!helper.IsDefined(commentId) && !helper.IsDefined(postId))
+    return _status;
+  _status++;
+  if(helper.IsDefined(commentId) && helper.IsDefined(postId))
+    return _status;
+  _status++;
+  Like.findAll({
+    where: {
+      Comment_ID: commentId,
+      Post_ID: postId
+    }
+  }).then(likes => {
+    likes.forEach(like => {
+      like.destroy();
+      _status++;
+    });
+    return _status;
+  })
+} 
+
 common.DB_INT_MAX = INT_MAX;
 common.PHOTOFLAGS = PHOTOFLAGS;
 common.DEFAULT_PHOTOLINK = DEFAULT_PHOTOLINK;
@@ -72,4 +96,5 @@ common.TRANSPORTER = transporter;
 common.ENCRYPT = sha256;
 common.LOCALADDR = localAddress;
 common.REMADDR = remoteAddress;
+common.DESTROYLIKES = destroyLikes;
 module.exports = common;

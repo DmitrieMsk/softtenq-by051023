@@ -192,29 +192,6 @@ exports.changePost = (req, res) => {
       }
 };
 
-function destroyLikes(commentId, postId)
-{
-  _status = -2;
-  searchParam = {};
-  if(!helper.IsDefined(commentId) && !helper.IsDefined(postId))
-    return _status;
-  _status++;
-  if(helper.IsDefined(commentId) && helper.IsDefined(postId))
-    return _status;
-  _status++;
-  Like.findAll({
-    where: {
-      Comment_ID: commentId,
-      Post_ID: postId
-    }
-  }).then(likes => {
-    likes.forEach(like => {
-      like.destroy();
-      _status++;
-    });
-    return _status;
-  })
-} 
 
 exports.deletePost = (req, res) => {
   postId = req.params["postId"];
@@ -235,7 +212,7 @@ exports.deletePost = (req, res) => {
         return;
       }
       post.destroy();
-      counter += destroyLikes(postId, null);
+      counter += helper.DESTROYLIKES(postId, null);
       counter++;
     Comment.findAll({
       where: {
@@ -246,7 +223,7 @@ exports.deletePost = (req, res) => {
       comments.forEach(comment => {
         commentId = comment.id;
         comment.destroy();
-        counter += destroyLikes(null, commentId);
+        counter += helper.DESTROYLIKES(null, commentId);
         counter++;
         Comment.findAll({
           where: {
@@ -257,7 +234,7 @@ exports.deletePost = (req, res) => {
           _comments.forEach(_comment => {
             _commentId = _comment.id;
             _comment.destroy();
-            counter += destroyLikes(null, _commentId);
+            counter += helper.DESTROYLIKES(null, _commentId);
             counter++;
           })
         })
