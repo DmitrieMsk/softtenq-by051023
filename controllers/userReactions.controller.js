@@ -375,6 +375,7 @@ exports.deleteComment = (req, res) => {
             }).then(comments => {
                 comments.forEach(_comment => {
                     _commentId = _comment.id;
+                    _comment.destroy();
                     helper.DESTROYLIKES(null, _commentId);
                 })
             })
