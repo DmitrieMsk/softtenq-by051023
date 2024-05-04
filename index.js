@@ -48,5 +48,6 @@ require('./routes/user.routes')(app);
 require('./routes/userReactions.routes')(app);
 require('./routes/news.routes.js')(app);
 require('./routes/photo.routes.js')(app);
+require('./routes/relations.routes.js')(app);
 app.listen(3000, () => console.log('Example app is listening on port 3000.'));
 //module.exports = express.Router
