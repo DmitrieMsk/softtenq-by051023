@@ -379,9 +379,10 @@ exports.deleteComment = (req, res) => {
                     helper.DESTROYLIKES(null, _commentId);
                 })
             })
-        })
+            
         res.status(200).send({message: "Deleted!"});
         return;
+        })
         } catch(e){
         res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."})
         return;

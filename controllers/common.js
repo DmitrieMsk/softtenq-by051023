@@ -1,5 +1,7 @@
 const nodemailer = require("nodemailer");
 const crypto = require('crypto');
+const db = require("../models");
+const Like = db.like;
 const localAddress = "http://localhost:3000/"
 const remoteAddress = "http://localhost:8000/"
 const transporter = nodemailer.createTransport({
@@ -67,10 +69,10 @@ function destroyLikes(commentId, postId)
 {
   _status = -2;
   searchParam = {};
-  if(!helper.IsDefined(commentId) && !helper.IsDefined(postId))
+  if(!IsDefined(commentId) && !IsDefined(postId))
     return _status;
   _status++;
-  if(helper.IsDefined(commentId) && helper.IsDefined(postId))
+  if(IsDefined(commentId) && IsDefined(postId))
     return _status;
   _status++;
   Like.findAll({

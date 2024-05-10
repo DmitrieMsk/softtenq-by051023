@@ -241,10 +241,10 @@ exports.deletePost = (req, res) => {
         })
       })
     });
+    res.status(200).send({message: `Deleted items.`});
+    return;
   });
     
-  res.status(200).send({message: `Deleted items.`});
-  return;
 };
 
 exports.feed = (req, res) => {
