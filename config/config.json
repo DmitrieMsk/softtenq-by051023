@@ -1,9 +1,9 @@
 {
   "development": {
     "username": "postgres",
-    "password": "dimaSql2023Asus",
+    "password": "000000",
     "database": "dbbydima10",
-    "host": "localhost:3000",
+    "host": "localhost",
     "dialect": "postgres"
   },
   "test": {
