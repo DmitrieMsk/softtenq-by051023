@@ -125,7 +125,8 @@ exports.allAccess = (req, res) => {
               id: user.id,
               username: user.username,
               email: user.email,
-              profilePicture: helper.GetProfilePicture(user.profilePicture)
+              profilePicture: helper.GetProfilePicture(user.profilePicture),
+              isActive: user.IsActive
             };
             usersArray.push(userJson);
           });
