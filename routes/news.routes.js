@@ -27,6 +27,10 @@ module.exports = function(app) {
    controller.feed 
   );
   app.post(
+    "/feed/:userId/subscribed",
+    controller.feedSubscribed
+   );
+  app.post(
     "/post/user/:userId",
     controller.getUserPosts 
    );

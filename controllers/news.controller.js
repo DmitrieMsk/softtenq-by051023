@@ -4,6 +4,7 @@ const User = db.user;
 const Post = db.post;
 const Comment = db.comment;
 const stream = require('stream')
+const Relation = db.relation;
 const Like = db.like;
 /*
 exports.getPost = (req, res) => {
@@ -300,6 +301,96 @@ exports.feed = (req, res) => {
       res.status(200).send(postsArray);
     });
   } catch (e) {
+    res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."});
+  }
+
+}
+
+exports.feedSubscribed = (req, res) => {
+  userId = req.params["userId"];
+  if(!helper.IsDefinedVID(userId))
+  {
+    res.status(400).send({message: "Invalid userId"});
+    return;
+  }
+  if(!helper.IsDefinedInt(req.body.flags)){
+    res.status(400).send({message: "Invalid flags"});
+    return;
+  }
+  if(!helper.IsDefinedUInt(req.body.startingPoint)){
+    res.status(400).send({message: "Invalid startingPoint"});
+    return;
+  }
+  if(!helper.IsDefinedUInt(req.body.postsCount)){
+    res.status(400).send({message: "Invalid postsCount"});
+    return;
+  }
+  try{
+    let flags = req.body.flags;
+    let startingPoint = req.body.startingPoint;
+    let postsCount = req.body.postsCount;
+    let order = undefined;
+    switch(flags){
+      //Date sorted search
+      case 0:
+          order = [["Publication_Date", "DESC"]]
+        break;
+      //Views sorted search
+      case 1:
+        order = [["Views", "DESC"]]
+        break;
+      default:
+        throw("Invalid flags");
+    
+    }
+    Relation.findAll({
+      where: {
+        Actor_User_ID: userId,
+        IsFollowing: true
+      }
+    }).then(relations => {
+      let postsArray = [];
+
+      relations.forEach(relation => {
+        User.findOne({
+          where: {
+            id: relation.Target_User_ID
+          }
+        }).then(user => {
+          if(user){
+            Post.findAll({
+              where: {
+                Owner_ID: user.id
+              }
+            }).then(posts => {
+              posts.forEach(post => {
+                let postJson = {
+                  id: post.id,
+                  photoId: post.Photo_ID,
+                  ownerId: post.Owner_ID,
+                  views: post.Views,
+                  tags: post.Tags,
+                  publicationDate: post.Publication_Date,
+                  comment: post.Comment,
+                  privacy: post.Privacy,
+                  repostedFrom: post.Reposted_From_ID
+                }
+                postsArray.push(postJson)
+              })
+            })
+          }
+        });
+      });
+      postsArrayEdited = postsArray.sort((a, b) => {
+        if(a.id < b.id){
+          return -1;
+        }
+      });
+      postsArrayEdited = postsArrayEdited.slice(startingPoint, startingPoint + postsCount + 1);
+      res.status(200).send(postsArrayEdited);
+      return;
+    })
+   } catch (e) {
     res.status(500).send({message: "Congratulations! You've managed to successfully bypass all safety measures and crash backend app."});
   }
 
