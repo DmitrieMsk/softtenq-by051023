@@ -8,7 +8,9 @@ const errorList = [
     "Success",
     "Invalid actorId",
     "Invalid targetId",
-    "ActorId and targetId must not be equal"
+    "ActorId and targetId must not be equal",
+    "Subscribed",
+    "Unsubscribed"
 ]
 async function createIfNotExist(actorId, targetId) {
     return new Promise(resolve => {
@@ -18,7 +20,6 @@ async function createIfNotExist(actorId, targetId) {
                 Target_User_ID: targetId
             }
         }).then(relation => {
-            console.log("1,", relation);
             if(!relation){
                 Relation.create({
                     Actor_User_ID: actorId,
@@ -29,11 +30,13 @@ async function createIfNotExist(actorId, targetId) {
                     IsBlocked: false,
                     IsHiddenFriend: false
                 }).then(_relation => {
-                    console.log("2,", _relation);
                     resolve(_relation);
+                    return;
                 });
             }
-            resolve(relation);
+            else{
+                resolve(relation);
+            }
         });
     })
 }
@@ -55,13 +58,19 @@ exports.toggleSubscribe = async (req, res) => {
         return;
     }
     createIfNotExist(actorId, targetId).then(relation => {
-        console.log("RELATION IS: ", relation);
         if(helper.IsDefined(relation))
             {
+                if(relation.IsFollowing)
+                    _res = 5;
+                else
+                    _res = 4;
                 relation.IsFollowing = !relation.IsFollowing;
                 relation.save();
                 res.status(200).send({message: `${errorList[_res]}`});
                 return;
             }
+        else {
+
+        }
     });
 };
