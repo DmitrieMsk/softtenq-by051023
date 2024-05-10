@@ -306,6 +306,10 @@ exports.feed = (req, res) => {
 
 }
 
+
+
+
+
 exports.feedSubscribed = (req, res) => {
   userId = req.params["userId"];
   if(!helper.IsDefinedVID(userId))
@@ -375,12 +379,14 @@ exports.feedSubscribed = (req, res) => {
                   privacy: post.Privacy,
                   repostedFrom: post.Reposted_From_ID
                 }
+                console.log(postJson);
                 postsArray.push(postJson)
               })
             })
           }
         });
       });
+      console.log("POSTS RRAY", postsArray);
       postsArrayEdited = postsArray.sort((a, b) => {
         if(a.id < b.id){
           return -1;

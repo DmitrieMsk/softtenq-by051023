@@ -74,3 +74,27 @@ exports.toggleSubscribe = async (req, res) => {
         }
     });
 };
+
+//todo: relations flag(multiple types of relations)
+exports.getSubscribersCount = (req, res) => {
+    userId = req.params["userId"];
+    if(!helper.IsDefinedVID(userId))
+        {
+            res.status(400).send({message: "Invalid userId"});
+            return;
+        }
+    Relation.findAll({
+        where: {
+            Target_User_ID: userId,
+            IsFollowing: true
+        }
+    }).then(relations => {
+        userIdArray = []
+        relations.forEach(relation => {
+            userIdArray.push({userId: relation.Actor_User_ID});
+        })
+        res.status(200).send(userIdArray);
+        return;
+
+    });
+}
