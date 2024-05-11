@@ -14,5 +14,9 @@ module.exports = function(app) {
     "/relation/subscribe",
     controller.toggleSubscribe
   );
+  app.get(
+    "/relation/subscribe_count/:userId",
+    controller.getSubscribersCount
+  );
 };
   
