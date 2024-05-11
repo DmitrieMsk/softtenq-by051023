@@ -1,9 +1,12 @@
+require('dotenv').config();
+const config = process.env;
+
 const nodemailer = require("nodemailer");
 const crypto = require('crypto');
 const db = require("../models");
 const Like = db.like;
-const localAddress = "http://localhost:3000/"
-const remoteAddress = "http://localhost:8000/"
+const backendAddress = config.BACKENDURL
+const frontendAddress = config.FRONTENDURL
 const transporter = nodemailer.createTransport({
     host: "smtp.yandex.ru",
     port: 587,
@@ -96,7 +99,7 @@ common.SEARCHFLAGS = SEARCHFLAGS;
 common.NODEMAILER = nodemailer;
 common.TRANSPORTER = transporter;
 common.ENCRYPT = sha256;
-common.LOCALADDR = localAddress;
-common.REMADDR = remoteAddress;
+common.LOCALADDR = backendAddress;
+common.REMADDR = frontendAddress;
 common.DESTROYLIKES = destroyLikes;
 module.exports = common;

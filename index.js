@@ -19,6 +19,8 @@ app.get('/fr', (req, res) => {
   res.send('back and front are friends');
 });
 
+app.use(cors());
+
 const db = require("./models");
 
 const Role = db.role;

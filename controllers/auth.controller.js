@@ -1,6 +1,7 @@
 const db = require("../models");
 const helper = require("./common")
-const config = require("../config/auth.config");
+require('dotenv').config();
+const config = process.env;
 const User = db.user;
 const Role = db.role;
 
