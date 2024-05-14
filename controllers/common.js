@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
     secure: false, // Use `true` for port 465, `false` for all other ports
     auth: {
       user: "softenq030524@yandex.ru",
-      pass: "mgefmoctcikpzafe",
+      pass: "xhhjpktynygrmsez",
     },
   });
 const common = {};
